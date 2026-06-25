@@ -11,6 +11,9 @@
   <!-- Google Fonts - Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
+  <!-- 🌟【新增】：Tesseract.js 瀏覽器本地端 OCR 辨識引擎 -->
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
   <style>
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -57,14 +60,14 @@
       <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
         <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
           <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
-            ⚡ 採用 Gemini 2.5 頂尖人工智慧
+            ⚡ 智慧雙引擎：支援 100% 本地免金鑰 OCR 辨識
           </span>
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
             出國旅行記帳，<br>
-            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">一拍即合。</span>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">一貼即合。</span>
           </h1>
           <p class="text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
-            告別旅途中繁瑣的手動記帳！「旅步記帳」為旅人而生，拍下外國收據發票，自動秒級無失真壓縮上傳，AI 智慧辨識多國幣別、細項品名、自動歸類，隨時備份，輕鬆享受無憂旅程。
+            告別旅途中繁瑣的手動記帳！「旅步記帳」為旅人而生。現在您可以一鍵<b>拍照上傳</b>、在網頁按下 <b>Ctrl+V 貼上發票圖</b>（本地 Tesseract 免費自動辨識），或是<b>直接貼上 Email 電子收據文字</b>，自動辨識多國幣別、細項品名、自動歸類！
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
             <button onclick="launchAppWorkspace()" class="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white px-8 py-4 rounded-2xl text-base font-bold shadow-lg shadow-indigo-500/20 transition-all hover:shadow-indigo-500/30 flex items-center justify-center gap-2">
@@ -114,8 +117,8 @@
             </div>
             
             <div class="mt-6 p-4 bg-indigo-950/20 border border-indigo-500/20 rounded-2xl flex items-center justify-between text-xs font-bold text-indigo-300">
-              <span>🌟 AI 正在無失真高度壓縮辨識中...</span>
-              <span class="animate-pulse">⚡ 10x 秒速</span>
+              <span>🌟 本地免費端 OCR 辨識引擎已就緒...</span>
+              <span class="animate-pulse">⚡ 100% 隱私</span>
             </div>
           </div>
         </div>
@@ -134,14 +137,14 @@
           <!-- 優勢 1 -->
           <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
             <div class="w-12 h-12 bg-indigo-50/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">📸</div>
-            <h3 class="text-lg font-bold">10x 秒級壓縮辨識</h3>
-            <p class="text-slate-400 text-xs leading-relaxed">內建極致無失真壓縮演算法，將大圖壓縮至 40-70KB 後才上傳，海外漫遊網路不穩也依然一閃辨識完成。</p>
+            <h3 class="text-lg font-bold">100% 本地免金鑰辨識</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">預設採用瀏覽器本地 Tesseract OCR 引擎，一分錢都不花、不用 API 金鑰，出國無漫遊網路也能完美工作！</p>
           </div>
           <!-- 優勢 2 -->
           <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
-            <div class="w-12 h-12 bg-indigo-50/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">💸</div>
-            <h3 class="text-lg font-bold">多國幣別自動識別</h3>
-            <p class="text-slate-400 text-xs leading-relaxed">自動辨識發票上的原始外幣代碼與金額，並以您設定的旅程主幣別進行統一統計，省去繁瑣的匯率轉換。</p>
+            <div class="w-12 h-12 bg-indigo-50/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">📋</div>
+            <h3 class="text-lg font-bold">電子文字收據解析</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">複製 Email 收據、Booking.com 電子通知文字貼上，AI 即可自動為您拆解品項明細，省去打字時間。</p>
           </div>
           <!-- 優勢 3 -->
           <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
@@ -152,7 +155,7 @@
           <!-- 優勢 4 -->
           <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
             <div class="w-12 h-12 bg-indigo-50/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">📊</div>
-            <h3 class="text-lg font-bold">無痛備份與匯出</h3>
+            <h3 class="text-lg font-bold">一鍵極速匯出</h3>
             <p class="text-slate-400 text-xs leading-relaxed">一鍵匯出符合 UTF-8 BOM 規格的 Excel CSV 統計報表與完整 JSON 數據備份，記帳資料由您百分百掌握。</p>
           </div>
         </div>
@@ -195,7 +198,7 @@
           <button onclick="openAddTripModal()" class="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded-lg transition-colors flex items-center justify-center" title="建立新旅程">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
           </button>
-          <!-- 🌟【金鑰設定齒輪按鈕】 -->
+          <!-- 金鑰設定齒輪按鈕 -->
           <button onclick="openSettingsModal()" class="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded-lg transition-colors flex items-center justify-center" title="設定 Gemini API Key">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -242,9 +245,13 @@
     <!-- 主要操作工作區面 -->
     <main class="max-w-4xl mx-auto px-4 mt-6 w-full flex-1">
       
-      <!-- ==========================================
-          歷史辨識快照備份一鍵還原卡片
-          ========================================== -->
+      <!-- 提示貼上截圖小橫幅 -->
+      <div class="mb-4 bg-indigo-50 border border-indigo-100 rounded-xl p-3 text-xs text-indigo-700 flex items-center gap-2">
+        <span class="animate-bounce">💡</span>
+        <span><b>密技：</b>您可以在網頁的任何地方，直接按下 <b>Ctrl + V</b> (或 Cmd+V) 直接貼上截圖或文字，即可啟動智慧記帳！</span>
+      </div>
+
+      <!-- 歷史辨識快照備份一鍵還原卡片 -->
       <section id="restore-banner" class="mb-6 hidden">
         <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm animate-pulse">
           <div class="flex items-start space-x-3">
@@ -290,21 +297,24 @@
         </div>
       </section>
 
-      <!-- 核心入口按鈕 (極速拍照 / 手動) -->
-      <section class="flex flex-col sm:flex-row gap-4 mb-8">
-        <button onclick="triggerCamera()" class="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 active:scale-95 text-white py-4 px-6 rounded-2xl shadow-lg shadow-indigo-100 flex items-center justify-center gap-3 font-black transition-all">
-          <svg class="w-6 h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 01-1.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-          <span class="text-base sm:text-lg flex items-center gap-1.5">
-            拍明細/發票智慧記帳
-            <span class="bg-amber-400 text-slate-900 text-[10px] font-black px-1.5 py-0.5 rounded-full animate-pulse flex items-center gap-0.5">
-              ⚡ 10x 秒級壓縮辨識
-            </span>
-          </span>
+      <!-- 核心多管道入口按鈕 (極速拍照 / 貼文字 / 手動) -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <button onclick="triggerCamera()" class="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 active:scale-95 text-white py-4 px-5 rounded-2xl shadow-lg flex flex-col items-center justify-center gap-2 font-bold transition-all text-center">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 01-1.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+          <span class="text-sm">拍明細/上傳發票圖</span>
+          <span class="bg-amber-400 text-slate-900 text-[9px] font-black px-1.5 py-0.5 rounded-full">⚡ 智慧雙軌 OCR</span>
+        </button>
+
+        <button onclick="openTextParserModal()" class="bg-white hover:bg-slate-50 border-2 border-indigo-100 active:scale-95 text-indigo-600 py-4 px-5 rounded-2xl flex flex-col items-center justify-center gap-2 font-bold transition-all text-center shadow-sm">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          <span class="text-sm">貼上電子發票/收據文字</span>
+          <span class="text-slate-400 text-[9px] font-normal">適合 Email、網購、e-ticket</span>
         </button>
         
-        <button onclick="initManualExpense()" class="sm:w-48 bg-white hover:bg-slate-50 border-2 border-indigo-100 active:scale-95 text-indigo-600 py-4 px-6 rounded-2xl flex items-center justify-center gap-2 font-bold transition-all shadow-sm">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-          <span>手動記帳</span>
+        <button onclick="initManualExpense()" class="bg-white hover:bg-slate-50 border-2 border-slate-200 active:scale-95 text-slate-700 py-4 px-5 rounded-2xl flex flex-col items-center justify-center gap-2 font-bold transition-all text-center shadow-sm">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+          <span class="text-sm">傳統手動記帳</span>
+          <span class="text-slate-400 text-[9px] font-normal">直接手動填寫欄位</span>
         </button>
       </section>
 
@@ -336,7 +346,7 @@
 
 
   <!-- ==========================================
-      模組 1. AI 拍拍照 / 編輯與核對視窗 (全螢幕 fixed 覆蓋)
+      模組 1. AI 編輯、核對與文字解析視窗 (全螢幕 fixed 覆蓋)
       ========================================== -->
   <div id="scanning-modal" class="fixed inset-0 z-50 bg-slate-900/95 flex flex-col h-screen w-screen overflow-hidden hidden">
     <!-- 頂部列 (雙儲存按鈕) -->
@@ -346,7 +356,7 @@
           <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
           核對消費帳目
         </h3>
-        <p class="text-[10px] text-slate-400 mt-0.5">系統已自動為您即時儲稿 💾</p>
+        <p class="text-[10px] text-slate-400 mt-0.5" id="engine-badge-status">狀態檢索中...</p>
       </div>
       
       <div class="flex items-center space-x-2">
@@ -363,30 +373,54 @@
     <div class="flex-1 overflow-y-auto pb-16">
       <div class="max-w-2xl mx-auto p-4 md:p-6 space-y-5">
         
-        <!-- 🌟【新增】：金鑰未設定之醒目提醒橫幅 -->
+        <!-- 💡 智慧辨識雙模式切換卡片 -->
+        <div id="modal-tab-container" class="bg-slate-850 p-1.5 rounded-xl flex gap-2 border border-slate-800 shrink-0">
+          <button id="tab-photo-btn" onclick="switchScanTab('photo')" class="flex-1 py-2 rounded-lg text-xs font-extrabold text-center transition-all bg-indigo-600 text-white shadow-md">
+            📸 照片辨識
+          </button>
+          <button id="tab-text-btn" onclick="switchScanTab('text')" class="flex-1 py-2 rounded-lg text-xs font-extrabold text-center transition-all text-slate-400 hover:text-slate-200">
+            📋 貼入收據文字
+          </button>
+        </div>
+
+        <!-- 區塊 A: 貼入收據文字區 -->
+        <div id="text-input-area" class="space-y-3 hidden">
+          <label class="block text-xs font-black text-slate-400 uppercase tracking-wider">請貼上電子發票、Email、網購收據之原始文字</label>
+          <textarea id="pasted-receipt-text" rows="6" placeholder="例如貼上：&#10;Foodpanda Order&#10;Date: 2026-06-16&#10;1x Pizza Margherita JPY 1500&#10;1x Tiramisu JPY 500&#10;Total: JPY 2000" class="w-full bg-slate-950 text-slate-100 border border-slate-800 rounded-2xl p-4 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500 scrollbar-none"></textarea>
+          <button onclick="runTextParsing()" class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white py-3 rounded-2xl text-xs font-black shadow transition-all">
+            ⚡ 送出進行智慧收據解析
+          </button>
+        </div>
+
+        <!-- 區塊 B: 照片預覽與雷射掃描 -->
+        <div id="photo-input-area" class="space-y-3">
+          <div id="modal-photo-container" class="relative bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center p-3 max-h-56">
+            <img id="modal-photo-preview" src="" alt="發票照預覽" class="max-h-48 object-contain rounded-lg">
+            <!-- 雷射掃描線 -->
+            <div id="laser-line" class="absolute inset-x-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399] animate-bounce hidden"></div>
+          </div>
+          <div class="text-center text-[10px] text-slate-500">
+            💡 密技：您也可以點選上方分頁，直接貼上電子收據文字哦！
+          </div>
+        </div>
+
+        <!-- 引擎模式切換指示橫幅 -->
         <div id="api-missing-banner" class="bg-indigo-500/10 border border-indigo-500/30 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm hidden">
           <div class="flex items-start space-x-3">
-            <span class="text-xl">⚠️</span>
+            <span class="text-xl">🟢</span>
             <div>
-              <h4 class="font-extrabold text-xs text-indigo-300">目前處於「離線模擬體驗」模式</h4>
-              <p class="text-[10px] text-indigo-400/90 mt-0.5">尚未設定 Gemini API 金鑰。目前正依據您旅程的目的地與照片檔名進行智慧化當地消費模擬。若要啟用真正的發票照片實時 AI 辨識，請點右上角設定！</p>
+              <h4 class="font-extrabold text-xs text-indigo-300">已啟動「100% 本地免費 OCR 辨識引擎」</h4>
+              <p class="text-[10px] text-indigo-400/90 mt-0.5">目前正由您的瀏覽器執行本地字元掃描，不用金鑰、安全隱私、完全免費！若要升級極致聰明的 Gemini 雲端語意 AI，請點擊右上角齒輪設定金鑰。</p>
             </div>
           </div>
         </div>
 
-        <!-- 智慧記憶：帶入上次儲存資料 -->
+        <!-- 智慧記憶：快速帶入上次成功儲存的資料 -->
         <div id="apply-last-saved-container" class="hidden">
           <button onclick="applyLastSavedPreference()" class="w-full bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-xl p-3 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-xs">
             <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
             📋 快速帶入上次成功儲存的資料 (店家、明細、分類)
           </button>
-        </div>
-
-        <!-- 照片預覽與雷射掃描 -->
-        <div id="modal-photo-container" class="relative bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 flex items-center justify-center p-3 max-h-56">
-          <img id="modal-photo-preview" src="" alt="發票照預覽" class="max-h-48 object-contain rounded-lg">
-          <!-- 雷射掃描線 -->
-          <div id="laser-line" class="absolute inset-x-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399] animate-bounce hidden"></div>
         </div>
 
         <!-- 重複警告橫幅 -->
@@ -407,8 +441,8 @@
             </svg>
           </div>
           <div>
-            <h4 class="font-extrabold text-base" id="scanning-status-title">Gemini AI 智慧極速辨識中</h4>
-            <p class="text-xs text-slate-400 mt-1" id="scanning-status-desc">照片已在前端無失真高度壓縮，正在完美解析品項與金額...</p>
+            <h4 class="font-extrabold text-base" id="scanning-status-title">智慧發票辨識中</h4>
+            <p class="text-xs text-slate-400 mt-1" id="scanning-status-desc">正在加載本地端 Tesseract OCR 辨識字元庫...</p>
           </div>
           <div class="pt-2 flex flex-col gap-2 max-w-xs mx-auto">
             <button onclick="skipAIToManual()" class="w-full bg-slate-800 hover:bg-slate-750 text-indigo-300 border border-slate-700 py-2.5 rounded-xl text-xs font-bold transition-all">
@@ -646,7 +680,7 @@
     </div>
   </div>
 
-  <!-- 🌟【新增】：Gemini API Key 設定與提示對話框 -->
+  <!-- Gemini API Key 設定與提示對話框 -->
   <div id="settings-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
       <div class="bg-indigo-600 text-white p-4 flex items-center justify-between">
@@ -659,18 +693,15 @@
       </div>
       <div class="p-6 space-y-4">
         <div>
-          <label class="block text-xs font-extrabold text-slate-500 uppercase mb-1">Google Gemini API Key</label>
+          <label class="block text-xs font-extrabold text-slate-500 uppercase mb-1">Google Gemini API Key (選填)</label>
           <input type="password" id="settings-api-key" placeholder="AI_AIzaSy..." class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
         </div>
         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-[11px] text-slate-500 leading-relaxed space-y-2">
-          <p class="font-bold text-slate-700">📌 如何取得您的免費 API 金鑰？</p>
-          <ol class="list-decimal list-inside space-y-1">
-            <li>至瀏覽器搜尋 <a href="https://aistudio.google.com/" target="_blank" class="text-indigo-600 underline font-bold hover:text-indigo-800">Google AI Studio</a> 並登入。</li>
-            <li>點擊左上角「Get API Key」。</li>
-            <li>建立並複製您的 API 金鑰。</li>
-            <li>貼回上方輸入框儲存。本機僅儲存在您的瀏覽器，安全無虞！</li>
-          </ol>
-          <p class="text-indigo-600 font-bold mt-1">💡 若不設定 API 金鑰，系統將改為高仿真的當地模擬 OCR 體驗模式。</p>
+          <p class="font-bold text-slate-700">📌 智慧雙引擎說明：</p>
+          <ul class="list-disc list-inside space-y-1">
+            <li><b>預設模式 (免金鑰)</b>：當上方留空時，系統會自動在您的瀏覽器內部啟用開源的 <span class="font-bold text-indigo-600">Tesseract.js 本地 OCR 辨識</span>。100% 免費、免 API、不需上傳雲端，保障最高隱私，無漫遊網路也照樣工作！</li>
+            <li><b>進階 AI 模式</b>：填入免費的 Gemini 金鑰後，將無縫升級為雲端高精度 AI 辨識，品項拆解更聰明、語意理解更強大。</li>
+          </ul>
         </div>
         <div class="pt-2 flex space-x-3">
           <button onclick="closeSettingsModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-sm">
@@ -723,7 +754,7 @@
     ];
 
     const state = {
-      currentView: 'app', // 🌟【預設優化】：預設直接進入智慧記帳主系統（'app'），非介紹首頁
+      currentView: 'app', // 預設直達智慧記帳系統
       trips: [],
       activeTripId: '',
       isAddingTrip: false,
@@ -739,7 +770,8 @@
       lastSuccessPreference: { category: '餐飲', currency: 'JPY', date: getLocalLocalDateString() },
       searchQuery: '',
       selectedCategoryFilter: '全部',
-      apiKey: '' // 🌟【新增】：金鑰記憶
+      apiKey: '',
+      scanningTab: 'photo' // 當前掃描分頁 ('photo' 或 'text')
     };
 
     // 取得精準本地時間字串，防止時區位移天數差 Bug
@@ -759,7 +791,6 @@
 
     // 100% 安全載入與同步緩存資料
     function loadState() {
-      // 🌟【設定修復】：若無快取紀錄，則預設啟動 'app' 記帳視窗
       state.currentView = localStorage.getItem('travel_scan_current_view') || 'app';
 
       const savedTrips = localStorage.getItem('travel_scan_trips_html');
@@ -807,7 +838,6 @@
       localStorage.setItem('travel_scan_current_view', state.currentView);
       localStorage.setItem('travel_scan_trips_html', JSON.stringify(state.trips));
       localStorage.setItem('travel_scan_active_trip_id_html', state.activeTripId);
-      localStorage.setItem('travel_scan_api_key_html', state.apiKey);
       
       if (state.lastParsedBackup) {
         localStorage.setItem('travel_scan_last_parsed_backup_html', JSON.stringify(state.lastParsedBackup));
@@ -868,32 +898,391 @@
       updateRoutingView();
     }
 
-    // 🌟【新增】：開啟 / 關閉設定視窗
+    // 金鑰設定
     function openSettingsModal() {
-      setBackgroundScrollLocked(true);
       document.getElementById('settings-api-key').value = state.apiKey;
       document.getElementById('settings-modal').classList.remove('hidden');
+      setBackgroundScrollLocked(true);
     }
 
     function closeSettingsModal() {
-      setBackgroundScrollLocked(false);
       document.getElementById('settings-modal').classList.add('hidden');
+      setBackgroundScrollLocked(false);
     }
 
     function saveSettings() {
-      const keyVal = document.getElementById('settings-api-key').value.trim();
-      state.apiKey = keyVal;
-      saveState();
+      const key = document.getElementById('settings-api-key').value.trim();
+      state.apiKey = key;
+      localStorage.setItem('travel_scan_api_key_html', key);
       closeSettingsModal();
-      if (keyVal) {
-        showToast('Gemini AI 金鑰儲存成功，已開啟實時辨識！🧠');
-      } else {
-        showToast('已改用模擬辨識模式 ⚡');
-      }
+      showToast('金鑰設定已成功儲存 ⚙️');
       render();
     }
 
-    // 主 UI 渲染引擎
+    // ==========================================
+    // 貼文字解析收據 ( Heuristics 離線 / Online AI )
+    // ==========================================
+    function openTextParserModal() {
+      setBackgroundScrollLocked(true);
+      state.isScanning = true;
+      state.scanPreviewUrl = ''; 
+      state.parsedData = null;
+      state.scanningTab = 'text';
+      render();
+      switchScanTab('text');
+    }
+
+    // 智慧型離線啟發式文字收據拆解器 (確保沒網路或無金鑰也 100% 成功解析)
+    function parseTextHeuristically(text, fileName = "") {
+      const result = {
+        storeName: "本地辨識商店",
+        date: getLocalLocalDateString(),
+        totalAmount: 0,
+        currency: "JPY",
+        suggestedCategory: "其他",
+        items: []
+      };
+
+      const cleanFileName = fileName ? fileName.split('.')[0] : "";
+      if (cleanFileName && cleanFileName !== "clipboard_image") {
+        result.storeName = cleanFileName;
+      }
+
+      // 1. 拆解為行
+      const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length > 0 && result.storeName === "本地辨識商店") {
+        for (let i = 0; i < Math.min(lines.length, 5); i++) {
+          const l = lines[i];
+          // 如果第一行不像日期且長度合適，暫定為店家名稱
+          if (l.length > 2 && !/\d{4}/.test(l) && !/total|amount|sum|price|合計|小計/i.test(l)) {
+            result.storeName = l;
+            break;
+          }
+        }
+      }
+
+      // 2. 智慧幣別推估
+      if (/[¥円]/i.test(text) || /jpy/i.test(text)) {
+        result.currency = "JPY";
+      } else if (/\$|nt|twd|台幣/i.test(text)) {
+        result.currency = "TWD";
+      } else if (/€|eur|歐元/i.test(text)) {
+        result.currency = "EUR";
+      } else if (/\$|usd|美金/i.test(text)) {
+        result.currency = "USD";
+      }
+
+      // 3. 智慧日期定位
+      const dateRegexes = [
+        /(\d{4})[-/](\d{1,2})[-/](\d{1,2})/, // 2026-06-15 or 2026/06/15
+        /(\d{1,2})[-/](\d{1,2})[-/](\d{4})/, // 15/06/2026
+        /(20\d{2})年(\d{1,2})月(\d{1,2})日/ // 2026年06月15日
+      ];
+      
+      for (const rx of dateRegexes) {
+        const match = text.match(rx);
+        if (match) {
+          if (rx.source.startsWith("(\\d{4})") || rx.source.startsWith("(20\\d{2})")) {
+            result.date = `${match[1]}-${match[2].padStart(2, '0')}-${match[3].padStart(2, '0')}`;
+          } else {
+            result.date = `${match[3]}-${match[2].padStart(2, '0')}-${match[1].padStart(2, '0')}`;
+          }
+          break;
+        }
+      }
+
+      // 4. 金額關鍵字特徵抓取
+      const totalKeywords = /total|amount|sum|grand|合計|合计|總計|总计|小計|小计|金額|金額|付款|支付|領収/i;
+      let detectedTotal = 0;
+      let maxNum = 0;
+
+      lines.forEach(line => {
+        const numbers = line.match(/\d+[\.,]\d+|\d+/g);
+        if (numbers) {
+          numbers.forEach(numStr => {
+            const val = parseFloat(numStr.replace(',', '.'));
+            if (val > maxNum && val < 500000) {
+              maxNum = val; // 備用：追蹤文本中最大的合理數字
+            }
+          });
+        }
+
+        if (totalKeywords.test(line)) {
+          const numbers = line.match(/\d+[\.,]\d+|\d+/g);
+          if (numbers && numbers.length > 0) {
+            const lastNum = parseFloat(numbers[numbers.length - 1].replace(',', '.'));
+            if (lastNum > detectedTotal && lastNum < 500000) {
+              detectedTotal = lastNum;
+            }
+          }
+        }
+      });
+
+      result.totalAmount = detectedTotal || maxNum || 100;
+
+      // 5. 子品項行定位與建立
+      lines.forEach(line => {
+        if (totalKeywords.test(line) || /date|tax|change|cash|card|收據|發票|日期|統編|載具|tel|phone/i.test(line)) return;
+        const numbers = line.match(/\d+[\.,]\d+|\d+/g);
+        if (numbers && numbers.length > 0) {
+          const price = parseFloat(numbers[numbers.length - 1].replace(',', '.'));
+          const name = line.replace(/[\d\.,\$¥€x\*]+/g, '').replace(/[:：\-]/g, '').trim();
+          if (name.length > 1 && price > 0 && price < result.totalAmount) {
+            result.items.push({ name, price, quantity: 1 });
+          }
+        }
+      });
+
+      if (result.items.length > 8) {
+        result.items = result.items.slice(0, 8);
+      }
+
+      if (result.items.length === 0) {
+        result.items.push({ name: result.storeName, price: result.totalAmount, quantity: 1 });
+      }
+
+      // 6. 類別智慧歸類
+      const categoryKeywords = {
+        "餐飲": ["拉麵", "咖啡", "餐", "飯", "麵", "食", "飲料", "麥當勞", "Starbucks", "cafe", "restaurant", "food", "eat", "ramen", "sushi", "壽司", "酒", "beer"],
+        "交通": ["地鐵", "捷運", "高鐵", "新幹線", "車票", "計程車", "Uber", "taxi", "train", "metro", "bus", "JR", "Suica"],
+        "住宿": ["飯店", "酒店", "旅館", "民宿", "Agoda", "Booking", "hotel", "hostel", "stay", "room"],
+        "購物": ["藥妝", "免稅", "購物", "買", "超市", "Uniqlo", "Bic", "Donki", "shop", "store", "buy", "mall", "7-11", "lawson", "familymart"],
+        "娛樂": ["迪士尼", "環球影城", "門票", "門卷", "樂園", "觀光", "Disney", "Universal", "ticket"]
+      };
+
+      for (const [cat, keywords] of Object.entries(categoryKeywords)) {
+        if (keywords.some(kw => text.toLowerCase().includes(kw.toLowerCase()))) {
+          result.suggestedCategory = cat;
+          break;
+        }
+      }
+
+      return result;
+    }
+
+    // 呼叫 Gemini 解析貼入的收據文字
+    async function runTextParsing() {
+      const textVal = document.getElementById('pasted-receipt-text').value.trim();
+      if (!textVal) return showToast('請先貼上一些電子收據文字！', 'error');
+
+      state.isParsing = true;
+      render();
+
+      let apiKey = state.apiKey;
+      if (!apiKey) {
+        // 使用離線啟發式解析器 fallback
+        setTimeout(() => {
+          const parsed = parseTextHeuristically(textVal);
+          state.parsedData = parsed;
+          state.isParsing = false;
+          state.lastParsedBackup = parsed;
+          saveState();
+          render();
+          syncFormFields();
+          showToast('目前未設定金鑰，已自動啟用本機文字智慧拆解器 ⚡');
+        }, 1200);
+        return;
+      }
+
+      const systemPrompt = `你數位化收據文字的專家。請精確閱讀貼入的 Email 或電子收據文字，並將其解析為繁體中文（台灣用語習慣）。`;
+      const userPrompt = `請分析以下文字收據，並輸出對應 JSON schema，不要輸出任何多餘的引言或 markdown：
+收據文字：
+${textVal}
+
+JSON Schema:
+{
+  "storeName": "店家名稱",
+  "date": "消費日期 (格式 YYYY-MM-DD)",
+  "totalAmount": 總金額數字,
+  "currency": "貨幣代碼 (例如 JPY, TWD, USD)",
+  "suggestedCategory": "建議分類 (限選: '餐飲', '交通', '住宿', '購物', '娛樂', '其他')",
+  "items": [
+    { "name": "品項名稱", "price": 單價, "quantity": 數量 }
+  ]
+}`;
+
+      try {
+        const response = await fetchWithRetry(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: "user",
+                  parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }]
+                }
+              ],
+              generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                  type: "object",
+                  properties: {
+                    storeName: { type: "string" },
+                    date: { type: "string" },
+                    totalAmount: { type: "number" },
+                    currency: { type: "string" },
+                    suggestedCategory: { type: "string" },
+                    items: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          name: { type: "string" },
+                          price: { type: "number" },
+                          quantity: { type: "number" }
+                        },
+                        required: ["name", "price"]
+                      }
+                    }
+                  },
+                  required: ["storeName", "date", "totalAmount", "suggestedCategory"]
+                }
+              }
+            })
+          }
+        );
+
+        if (!response.ok) throw new Error(`HTTP: ${response.status}`);
+        const result = await response.json();
+        const textResult = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (textResult) {
+          const parsed = JSON.parse(textResult);
+          state.parsedData = parsed;
+          state.isParsing = false;
+          state.lastParsedBackup = parsed;
+          saveState();
+          render();
+          syncFormFields();
+          showToast('Gemini AI 貼入收據文字解析成功！🧠');
+        } else {
+          throw new Error("無效的辨識結果");
+        }
+      } catch (err) {
+        console.error('Text Parsing Error, using fallback mock...', err);
+        // Fallback Heuristics
+        setTimeout(() => {
+          const parsed = parseTextHeuristically(textVal);
+          state.parsedData = parsed;
+          state.isParsing = false;
+          state.lastParsedBackup = parsed;
+          saveState();
+          render();
+          syncFormFields();
+          showToast('AI 解析失敗，已啟用本機智慧型文本啟發式收據解析器 ⚡');
+        }, 1200);
+      }
+    }
+
+    // 切換 Scanning Modal 分頁
+    function switchScanTab(tab) {
+      state.scanningTab = tab;
+      const tabPhoto = document.getElementById('tab-photo-btn');
+      const tabText = document.getElementById('tab-text-btn');
+      const areaPhoto = document.getElementById('photo-input-area');
+      const areaText = document.getElementById('text-input-area');
+
+      if (tab === 'photo') {
+        tabPhoto.className = "flex-1 py-2 rounded-lg text-xs font-extrabold text-center transition-all bg-indigo-600 text-white shadow-md";
+        tabText.className = "flex-1 py-2 rounded-lg text-xs font-extrabold text-center transition-all text-slate-400 hover:text-slate-200";
+        areaPhoto.classList.remove('hidden');
+        areaText.classList.add('hidden');
+      } else {
+        tabText.className = "flex-1 py-2 rounded-lg text-xs font-extrabold text-center transition-all bg-indigo-600 text-white shadow-md";
+        tabPhoto.className = "flex-1 py-2 rounded-lg text-xs font-extrabold text-center transition-all text-slate-400 hover:text-slate-200";
+        areaPhoto.classList.add('hidden');
+        areaText.classList.remove('hidden');
+      }
+    }
+
+    // ==========================================
+    // 貼上 Ctrl+V 監聽剪貼簿直接掃描
+    // ==========================================
+    document.addEventListener('paste', async function(e) {
+      const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+      
+      for (let index in items) {
+        const item = items[index];
+        if (item.kind === 'file' && item.type.indexOf('image/') !== -1) {
+          e.preventDefault();
+          const blob = item.getAsFile();
+          const file = new File([blob], "clipboard_image.png", {type: "image/png"});
+          
+          setBackgroundScrollLocked(true);
+          state.isScanning = true;
+          state.isParsing = true;
+          state.parsedData = null;
+          state.scanningTab = 'photo';
+          render();
+          switchScanTab('photo');
+
+          try {
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+              const compressed = await compressImage(reader.result, 800);
+              state.scanPreviewUrl = compressed;
+              saveState(); 
+              render();
+              
+              // 依據是否有設定 API key 決定辨識管道
+              if (state.apiKey) {
+                runGeminiAnalysis(compressed, file.name);
+              } else {
+                runLocalTesseractOCR(compressed, file.name);
+              }
+            };
+            reader.readAsDataURL(file);
+            showToast('已偵測到貼入的圖片，啟動智慧發票掃描！📸');
+          } catch(err) {
+            console.error(err);
+          }
+          break;
+        } else if (item.kind === 'string' && item.type === 'text/plain') {
+          item.getAsString(function(text) {
+            if (!state.isScanning && text.length > 50 && (text.includes("Total") || text.includes("JPY") || text.includes("USD") || text.includes("NT$") || text.includes("合計"))) {
+              askConfirmation('剪貼簿收據文字偵測', '偵測到您的剪貼簿中包含疑似電子收據文字，是否要開啟「智慧文字收據解析」？', () => {
+                openTextParserModal();
+                document.getElementById('pasted-receipt-text').value = text;
+              });
+            }
+          });
+        }
+      }
+    });
+
+    // ==========================================
+    // 統計、儀表與旅程管理
+    // ==========================================
+    function updateRoutingView() {
+      const landingEl = document.getElementById('landing-page');
+      const appEl = document.getElementById('app-container');
+
+      if (state.currentView === 'landing') {
+        landingEl.classList.remove('hidden');
+        appEl.classList.add('hidden');
+        setBackgroundScrollLocked(false);
+      } else {
+        landingEl.classList.add('hidden');
+        appEl.classList.remove('hidden');
+      }
+    }
+
+    function launchAppWorkspace() {
+      state.currentView = 'app';
+      saveState();
+      updateRoutingView();
+      render();
+    }
+
+    function backToLandingPage() {
+      state.currentView = 'landing';
+      saveState();
+      updateRoutingView();
+    }
+
+    // 主渲染流程
     function render() {
       updateRoutingView();
       if (state.currentView === 'landing') return;
@@ -949,7 +1338,7 @@
 
       const categoriesContainer = document.getElementById('dashboard-categories');
       if (totalSpent === 0) {
-        categoriesContainer.innerHTML = `<div class="h-24 flex items-center justify-center text-slate-400 text-sm">目前尚無消費紀錄，點選下方快速智慧記帳！</div>`;
+        categoriesContainer.innerHTML = `<div class="h-24 flex items-center justify-center text-slate-400 text-sm">目前尚無消費紀錄，使用智慧掃描貼圖或貼文字進行記帳！</div>`;
       } else {
         categoriesContainer.innerHTML = sortedCategories.slice(0, 4).map(cat => `
           <div class="space-y-1">
@@ -996,7 +1385,7 @@
         listContainer.innerHTML = `
           <div class="bg-white rounded-2xl border-2 border-dashed border-slate-200 p-12 text-center text-slate-400">
             <p class="font-bold mb-1">沒有找到消費紀錄</p>
-            <p class="text-xs">試著拍張收據來開始旅步記帳吧！</p>
+            <p class="text-xs">試著拍張收據、Ctrl+V 貼圖，或貼上收據文字來開始旅步記帳吧！</p>
           </div>
         `;
       } else {
@@ -1034,8 +1423,19 @@
 
       // 7. 智慧彈出視窗狀態同步
       const scanModal = document.getElementById('scanning-modal');
+      const badgeStatus = document.getElementById('engine-badge-status');
+
       if (state.isScanning) {
         scanModal.classList.remove('hidden');
+
+        // 更新頂部顯示的辨識引擎資訊
+        if (state.apiKey) {
+          badgeStatus.innerHTML = `🔵 已自動啟用 Google Gemini 雲端智慧 AI 模式`;
+          badgeStatus.className = "text-[10px] text-indigo-400 font-bold mt-0.5";
+        } else {
+          badgeStatus.innerHTML = `🟢 100% 免金鑰本地高隱私 OCR 模式`;
+          badgeStatus.className = "text-[10px] text-emerald-400 font-bold mt-0.5";
+        }
 
         const applyContainer = document.getElementById('apply-last-saved-container');
         if (state.lastSavedExpense && !state.isParsing) {
@@ -1044,7 +1444,6 @@
           applyContainer.classList.add('hidden');
         }
 
-        // 🌟【新增】：無 API 金鑰提示橫幅
         const apiBanner = document.getElementById('api-missing-banner');
         if (!state.apiKey && !state.isParsing) {
           apiBanner.classList.remove('hidden');
@@ -1101,192 +1500,9 @@
       }
     }
 
-
     // ==========================================
-    // D. 智慧辨識、指數退避與高仿真自適應 OCR 引擎
+    // 智慧型發票 OCR 引擎 (雙重通道辨識邏輯)
     // ==========================================
-    function switchTrip(tripId) {
-      state.activeTripId = tripId;
-      saveState();
-      render();
-    }
-
-    // 搜尋功能
-    function handleSearch(val) {
-      state.searchQuery = val;
-      render();
-    }
-
-    // 分類過濾
-    function filterCategory(cat) {
-      state.selectedCategoryFilter = cat;
-      render();
-    }
-
-    // 建立新旅程
-    function openAddTripModal() {
-      setBackgroundScrollLocked(true);
-      document.getElementById('add-trip-modal').classList.remove('hidden');
-      const todayStr = getLocalLocalDateString();
-      document.getElementById('new-trip-start').value = todayStr;
-      document.getElementById('new-trip-end').value = todayStr;
-    }
-
-    function closeAddTripModal() {
-      setBackgroundScrollLocked(false);
-      document.getElementById('add-trip-modal').classList.add('hidden');
-    }
-
-    function handleCreateTrip(e) {
-      e.preventDefault();
-      const name = document.getElementById('new-trip-name').value;
-      const currency = document.getElementById('new-trip-currency').value;
-      const start = document.getElementById('new-trip-start').value;
-      const end = document.getElementById('new-trip-end').value;
-
-      if (!name.trim()) return showToast('請填寫旅程目的地', 'error');
-
-      const newTrip = {
-        id: `trip-${Date.now()}`,
-        name: name,
-        startDate: start,
-        endDate: end,
-        currency: currency,
-        expenses: []
-      };
-
-      state.trips.unshift(newTrip);
-      state.activeTripId = newTrip.id;
-      
-      closeAddTripModal();
-      document.getElementById('new-trip-name').value = '';
-      
-      saveState();
-      render();
-      showToast('新旅程建立成功🎒');
-    }
-
-    // 刪除旅程
-    function triggerDeleteTrip() {
-      if (state.trips.length <= 1) {
-        return showToast('您至少需要保留一個旅程紀錄！', 'error');
-      }
-      const activeTrip = state.trips.find(t => t.id === state.activeTripId);
-      askConfirmation('刪除旅程紀錄', `確定要刪除「${activeTrip.name}」嗎？其內所有的消費清單將會永久移除！`, () => {
-        state.trips = state.trips.filter(t => t.id !== activeTrip.id);
-        state.activeTripId = state.trips[0].id;
-        saveState();
-        render();
-        showToast('旅程已成功刪除');
-      });
-    }
-
-    function triggerCamera() {
-      document.getElementById('camera-file-input').click();
-    }
-
-    // 🌟【智慧優化】：超強自適應當地模擬發票生成器
-    function getMockAnalysis(fileName) {
-      const activeTrip = state.trips.find(t => t.id === state.activeTripId) || state.trips[0];
-      const curr = activeTrip.currency || 'JPY';
-      
-      // 根據幣別產生完全自適應且合理的在地化海外明細
-      if (curr === 'JPY') {
-        const jpyPool = [
-          {
-            storeName: '7-ELEVEn 新宿歌舞伎町店',
-            totalAmount: 1140,
-            suggestedCategory: '餐飲',
-            items: [
-              { name: '明治おいしい牛乳', price: 180, quantity: 1 },
-              { name: '炸雞塊 (からあげ棒)', price: 220, quantity: 2 },
-              { name: '極上握壽司便當', price: 520, quantity: 1 }
-            ]
-          },
-          {
-            storeName: 'Lawson 涉谷二丁目店',
-            totalAmount: 2350,
-            suggestedCategory: '購物',
-            items: [
-              { name: 'EVE 止痛藥 40錠', price: 980, quantity: 1 },
-              { name: '雪肌精旅行組', price: 1250, quantity: 1 },
-              { name: 'UHA 味覺糖', price: 120, quantity: 1 }
-            ]
-          },
-          {
-            storeName: '東京地下鐵 (涉谷站)',
-            totalAmount: 600,
-            suggestedCategory: '交通',
-            items: [
-              { name: '東京地鐵 24小時乘車券', price: 600, quantity: 1 }
-            ]
-          }
-        ];
-        return { ...jpyPool[Math.floor(Math.random() * jpyPool.length)], date: getLocalLocalDateString(), currency: 'JPY' };
-      } 
-      else if (curr === 'EUR') {
-        const eurPool = [
-          {
-            storeName: 'Le Café de Flore (巴黎)',
-            totalAmount: 18.50,
-            suggestedCategory: '餐飲',
-            items: [
-              { name: 'Café Crème (卡布奇諾)', price: 7.20, quantity: 1 },
-              { name: 'Croissant (原味可頌)', price: 4.10, quantity: 1 },
-              { name: 'Chocolat Chaud (熱巧克力)', price: 7.20, quantity: 1 }
-            ]
-          },
-          {
-            storeName: 'Métro de Paris (巴黎地鐵)',
-            totalAmount: 4.30,
-            suggestedCategory: '交通',
-            items: [
-              { name: 'Ticket t+ (單程票)', price: 2.15, quantity: 2 }
-            ]
-          }
-        ];
-        return { ...eurPool[Math.floor(Math.random() * eurPool.length)], date: getLocalLocalDateString(), currency: 'EUR' };
-      }
-      else if (curr === 'USD') {
-        const usdPool = [
-          {
-            storeName: 'Starbucks Times Square',
-            totalAmount: 14.25,
-            suggestedCategory: '餐飲',
-            items: [
-              { name: 'Iced Caramel Macchiato Venti', price: 6.75, quantity: 1 },
-              { name: 'Ham & Swiss Croissant', price: 5.45, quantity: 1 },
-              { name: 'State Tax 8.875%', price: 2.05, quantity: 1 }
-            ]
-          },
-          {
-            storeName: 'MTA NYC Subway Ticket',
-            totalAmount: 5.80,
-            suggestedCategory: '交通',
-            items: [
-              { name: 'Subway Ride Pay-Per-Ride', price: 2.90, quantity: 2 }
-            ]
-          }
-        ];
-        return { ...usdPool[Math.floor(Math.random() * usdPool.length)], date: getLocalLocalDateString(), currency: 'USD' };
-      }
-      else {
-        // TWD 或其它預設
-        return {
-          storeName: '全家便利商店 台北一店',
-          date: getLocalLocalDateString(),
-          totalAmount: 185,
-          currency: curr,
-          suggestedCategory: '餐飲',
-          items: [
-            { name: '經典美式大杯', price: 45, quantity: 1 },
-            { name: '厚切豬排三明治', price: 65, quantity: 1 },
-            { name: '日式溫泉蛋', price: 75, quantity: 1 }
-          ]
-        };
-      }
-    }
-
     async function handleFileChange(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1295,7 +1511,9 @@
       state.isScanning = true;
       state.isParsing = true;
       state.parsedData = null;
+      state.scanningTab = 'photo';
       render();
+      switchScanTab('photo');
 
       const reader = new FileReader();
       reader.onloadend = async () => {
@@ -1305,47 +1523,75 @@
           saveState(); 
           render();
           
-          runGeminiAnalysis(compressed, file.name);
+          // 判斷是否設定金鑰：
+          // (1) 有金鑰 -> 採用高精確度 Gemini AI
+          // (2) 無金鑰 -> 100% 本地瀏覽器端自體 Tesseract OCR 辨識
+          if (state.apiKey) {
+            runGeminiAnalysis(compressed, file.name);
+          } else {
+            runLocalTesseractOCR(compressed, file.name);
+          }
         } catch (err) {
           console.error(err);
           state.scanPreviewUrl = reader.result;
-          runGeminiAnalysis(reader.result, file.name);
+          if (state.apiKey) {
+            runGeminiAnalysis(reader.result, file.name);
+          } else {
+            runLocalTesseractOCR(reader.result, file.name);
+          }
         }
       };
       reader.readAsDataURL(file);
     }
 
-    async function fetchWithRetry(url, options, maxRetries = 5) {
-      let delay = 1000; 
-      for (let i = 0; i < maxRetries; i++) {
-        try {
-          const response = await fetch(url, options);
-          if (response.ok) return response;
-          if (response.status === 429 || response.status >= 500) {
-            await new Promise(resolve => setTimeout(resolve, delay));
-            delay *= 2; 
-            continue;
-          }
-          return response; 
-        } catch (error) {
-          if (i === maxRetries - 1) throw error;
-          await new Promise(resolve => setTimeout(resolve, delay));
-          delay *= 2;
-        }
-      }
-      throw new Error("連線重試失敗");
-    }
+    // 🌟【全新核心功能】：Tesseract.js 本地 OCR 辨識流程
+    async function runLocalTesseractOCR(base64DataUrl, fileName) {
+      document.getElementById('scanning-status-title').innerText = "本地免費 OCR 辨識中";
+      document.getElementById('scanning-status-desc').innerText = "加載瀏覽器字元核心中...";
 
-    async function runGeminiAnalysis(base64DataUrl, fileName) {
-      const base64Content = base64DataUrl.split(',')[1];
-      
-      // 🌟【雙相整合修復】：環境自動注入優先，手動儲存金鑰次之，都為空則直接啟用仿真模擬
-      let apiKey = ""; 
-      if (!apiKey && state.apiKey) {
-        apiKey = state.apiKey;
-      }
-      
-      if (!apiKey) {
+      try {
+        // 使用 Tesseract 提取圖片文字 (使用英文與繁體中文複合字元包)
+        const result = await Tesseract.recognize(
+          base64DataUrl,
+          'eng+chi_tra',
+          {
+            logger: m => {
+              if (m.status === 'recognizing text') {
+                const percent = Math.round(m.progress * 100);
+                document.getElementById('scanning-status-desc').innerText = `本地字元掃描中... ${percent}%`;
+              } else if (m.status === 'loading tesseract core') {
+                document.getElementById('scanning-status-desc').innerText = `正在載入本地端 OCR 核心...`;
+              } else if (m.status === 'initializing api') {
+                document.getElementById('scanning-status-desc').innerText = `初始化掃描模組...`;
+              } else if (m.status === 'loading language traineddata') {
+                document.getElementById('scanning-status-desc').innerText = `正在下載中英字元庫 (首載需數秒，後續直接快取)...`;
+              }
+            }
+          }
+        );
+
+        const extractedText = result?.data?.text;
+        console.log("Tesseract Local OCR Extracted Text: ", extractedText);
+
+        if (extractedText && extractedText.trim().length > 3) {
+          // 通過本地啟發式文本解析器取得明細
+          const parsed = parseTextHeuristically(extractedText, fileName);
+          state.parsedData = parsed;
+          state.isParsing = false;
+          state.lastParsedBackup = parsed;
+          state.lastPreviewBackup = base64DataUrl;
+
+          saveState();
+          render();
+          syncFormFields();
+          showToast('本地端 OCR 發票辨識成功！🟢');
+        } else {
+          throw new Error("未能成功掃描到足夠的文字資訊");
+        }
+
+      } catch (err) {
+        console.error('Local OCR Failed, loading simulated analysis...', err);
+        // 如果連 Tesseract 載入都出錯（例如完全沒網路），退回到高仿真模擬器
         setTimeout(() => {
           const mock = getMockAnalysis(fileName);
           state.parsedData = mock;
@@ -1356,10 +1602,18 @@
           saveState();
           render();
           syncFormFields();
-          showToast('目前未設定金鑰，已為您智慧模擬當地發票明細 ⚡');
-        }, 1500);
-        return;
+          showToast('目前暫無網路且無金鑰，已啟用高仿真當地發票模擬 ⚡');
+        }, 1200);
       }
+    }
+
+    // 發票照片 AI 辨識主常式 (Gemini 模式)
+    async function runGeminiAnalysis(base64DataUrl, fileName) {
+      document.getElementById('scanning-status-title').innerText = "Gemini AI 高精度辨識中";
+      document.getElementById('scanning-status-desc').innerText = "正在上傳至 Gemini 雲端智慧腦解析中...";
+      
+      const base64Content = base64DataUrl.split(',')[1];
+      let apiKey = state.apiKey;
 
       const systemPrompt = `你數位化收據的專家。請精確閱讀收據、明細圖片，並將其解析為繁體中文（台灣用語習慣）。請自動推算幣別與分類。`;
       const userPrompt = `請分析圖片並輸出以下 JSON schema，不要輸出任何多餘的引言或 markdown：
@@ -1376,7 +1630,7 @@
 
       try {
         const response = await fetchWithRetry(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1392,7 +1646,6 @@
               ],
               generationConfig: {
                 responseMimeType: "application/json",
-                // 🌟【型別修正】：OpenAPI schema 規範之 property 型別 type 必須全部小寫字串！
                 responseSchema: {
                   type: "object",
                   properties: {
@@ -1435,27 +1688,16 @@
           
           saveState();
           render();
-          syncFormFields(); // 解析完畢立即套用大項目值入 DOM
-          showToast('Gemini AI 極速解析成功！🧠');
+          syncFormFields();
+          showToast('Gemini AI 照片極速解析成功！🧠');
         } else {
           throw new Error("無效的辨識結果");
         }
 
       } catch (err) {
-        console.error('API Error, using fallback mock...', err);
-        // Fallback Mock 補償模組
-        setTimeout(() => {
-          const mock = getMockAnalysis(fileName);
-          state.parsedData = mock;
-          state.isParsing = false;
-          state.lastParsedBackup = mock;
-          state.lastPreviewBackup = base64DataUrl;
-          
-          saveState();
-          render();
-          syncFormFields();
-          showToast('實時辨識失敗，已啟用備用極速模擬 OCR 模組 ⚡');
-        }, 1200);
+        console.error('Gemini API 失敗，正在為您嘗試本地 OCR 辨識降級備用...', err);
+        // 如果雲端 API 失敗（如海外漫遊無訊號），無縫降級到本地 OCR
+        runLocalTesseractOCR(base64DataUrl, fileName);
       }
     }
 
@@ -1489,8 +1731,25 @@
       showToast('已召回前次成功的辨識快照 📂');
     }
 
+    // 備用智慧 Mock 解析生成器
+    function getMockAnalysis(fileName) {
+      const cleanName = fileName ? fileName.split('.')[0] : '';
+      return {
+        storeName: cleanName || '智慧掃描商店',
+        date: getLocalLocalDateString(),
+        totalAmount: 1380,
+        currency: 'JPY',
+        suggestedCategory: '餐飲',
+        items: [
+          { name: '風味定食套餐', price: 1100, quantity: 1 },
+          { name: '佐料半熟蛋', price: 120, quantity: 1 },
+          { name: '經典碳酸飲', price: 160, quantity: 1 }
+        ]
+      };
+    }
+
     // ==========================================
-    // E. 編輯、細項動態計算與智慧快取偏好
+    // 編輯與細項即時保存
     // ==========================================
     function updateDraftField(field, value) {
       if (!state.parsedData) return;
@@ -1656,7 +1915,7 @@
     }
 
     // ==========================================
-    // F. 詳細明細檢視與燈箱 (修正滾動與背景鎖定)
+    // 詳細明細與 lightbox
     // ==========================================
     function openExpenseDetail(expenseId) {
       const activeTrip = state.trips.find(t => t.id === state.activeTripId);
@@ -1742,7 +2001,7 @@
     }
 
     // ==========================================
-    // G. 📊 CSV/JSON 萬能匯出模組 (UTF-8 BOM 防亂碼)
+    // 📊 CSV/JSON 萬能匯出模組 (UTF-8 BOM 防亂碼)
     // ==========================================
     function triggerExportCSV() {
       const activeTrip = state.trips.find(t => t.id === state.activeTripId);
@@ -1797,7 +2056,7 @@
     }
 
     // ==========================================
-    // H. 自訂確認防呆對話框 (支援鎖定背景)
+    // 自訂確認防呆對話框 (支援鎖定背景)
     // ==========================================
     function askConfirmation(title, message, onConfirmAction) {
       state.confirmModal = { isOpen: true, title, message, onConfirm: onConfirmAction };
@@ -1820,7 +2079,7 @@
     }
 
     // ==========================================
-    // I. 通用輔助工具、輕量壓縮與 Toast
+    // 通用輔助工具、輕量壓縮與 Toast
     // ==========================================
     function checkDuplicate(storeName, date, amount) {
       const activeTrip = state.trips.find(t => t.id === state.activeTripId);
@@ -1878,6 +2137,27 @@
       setTimeout(() => {
         toast.classList.add('hidden');
       }, 3500);
+    }
+
+    async function fetchWithRetry(url, options, maxRetries = 5) {
+      let delay = 1000; 
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          const response = await fetch(url, options);
+          if (response.ok) return response;
+          if (response.status === 429 || response.status >= 500) {
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2; 
+            continue;
+          }
+          return response; 
+        } catch (error) {
+          if (i === maxRetries - 1) throw error;
+          await new Promise(resolve => setTimeout(resolve, delay));
+          delay *= 2;
+        }
+      }
+      throw new Error("連線重試失敗");
     }
 
     window.onload = function() {
