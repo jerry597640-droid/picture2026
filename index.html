@@ -195,7 +195,7 @@
           <button onclick="openAddTripModal()" class="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded-lg transition-colors flex items-center justify-center" title="建立新旅程">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
           </button>
-          <!-- 🌟【新增】：金鑰設定齒輪按鈕 -->
+          <!-- 🌟【金鑰設定齒輪按鈕】 -->
           <button onclick="openSettingsModal()" class="bg-white/20 hover:bg-white/30 text-white p-1.5 rounded-lg transition-colors flex items-center justify-center" title="設定 Gemini API Key">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
@@ -346,7 +346,7 @@
           <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
           核對消費帳目
         </h3>
-        <p class="text-[10px] text-slate-400 mt-0.5">系統已自動為您即時儲存草稿 💾</p>
+        <p class="text-[10px] text-slate-400 mt-0.5">系統已自動為您即時儲稿 💾</p>
       </div>
       
       <div class="flex items-center space-x-2">
@@ -684,13 +684,6 @@
     </div>
   </div>
 
-  <!-- 全域 Toast 通知 -->
-  <div id="toast-notification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center hidden">
-    <div id="toast-box" class="px-5 py-3 rounded-2xl shadow-xl border text-sm font-bold flex items-center space-x-2">
-      <!-- 內容動態插入 -->
-    </div>
-  </div>
-
 
   <!-- ==========================================
       JavaScript 業務邏輯與渲染引擎
@@ -897,6 +890,7 @@
       } else {
         showToast('已改用模擬辨識模式 ⚡');
       }
+      render();
     }
 
     // 主 UI 渲染引擎
@@ -1073,17 +1067,6 @@
           loader.classList.remove('hidden');
           laserLine.classList.remove('hidden');
           formFields.classList.add('hidden');
-          
-          // 狀態文案微調
-          const statusTitle = document.getElementById('scanning-status-title');
-          const statusDesc = document.getElementById('scanning-status-desc');
-          if (state.apiKey) {
-            statusTitle.innerText = "Gemini AI 智慧極速辨識中...";
-            statusDesc.innerText = "照片已高度無失真壓縮，正在由 Gemini 完美的解析各品項與小計金額中...";
-          } else {
-            statusTitle.innerText = "智慧 OCR 當地模擬分析中...";
-            statusDesc.innerText = "正依據您的照片及目的地，模擬推算高擬真的海外開銷小計與品項細節...";
-          }
         } else {
           loader.classList.add('hidden');
           laserLine.classList.add('hidden');
@@ -1120,7 +1103,7 @@
 
 
     // ==========================================
-    // D. 智慧辨識與智慧模擬自適應 OCR 引擎
+    // D. 智慧辨識、指數退避與高仿真自適應 OCR 引擎
     // ==========================================
     function switchTrip(tripId) {
       state.activeTripId = tripId;
@@ -1356,8 +1339,13 @@
     async function runGeminiAnalysis(base64DataUrl, fileName) {
       const base64Content = base64DataUrl.split(',')[1];
       
-      // 🌟【核心修復】：如果沒有設定金鑰，直接進入自適應當地模擬辨識模組，不再發生「照片不符」問題
-      if (!state.apiKey) {
+      // 🌟【雙相整合修復】：環境自動注入優先，手動儲存金鑰次之，都為空則直接啟用仿真模擬
+      let apiKey = ""; 
+      if (!apiKey && state.apiKey) {
+        apiKey = state.apiKey;
+      }
+      
+      if (!apiKey) {
         setTimeout(() => {
           const mock = getMockAnalysis(fileName);
           state.parsedData = mock;
@@ -1368,7 +1356,7 @@
           saveState();
           render();
           syncFormFields();
-          showToast('智慧辨識完成！已為您自動模擬當地消費明細 ⚡');
+          showToast('目前未設定金鑰，已為您智慧模擬當地發票明細 ⚡');
         }, 1500);
         return;
       }
@@ -1388,7 +1376,7 @@
 
       try {
         const response = await fetchWithRetry(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${state.apiKey}`,
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
           {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1404,22 +1392,23 @@
               ],
               generationConfig: {
                 responseMimeType: "application/json",
+                // 🌟【型別修正】：OpenAPI schema 規範之 property 型別 type 必須全部小寫字串！
                 responseSchema: {
-                  type: "OBJECT",
+                  type: "object",
                   properties: {
-                    storeName: { type: "STRING" },
-                    date: { type: "STRING" },
-                    totalAmount: { type: "NUMBER" },
-                    currency: { type: "STRING" },
-                    suggestedCategory: { type: "STRING" },
+                    storeName: { type: "string" },
+                    date: { type: "string" },
+                    totalAmount: { type: "number" },
+                    currency: { type: "string" },
+                    suggestedCategory: { type: "string" },
                     items: {
-                      type: "ARRAY",
+                      type: "array",
                       items: {
-                        type: "OBJECT",
+                        type: "object",
                         properties: {
-                          name: { type: "STRING" },
-                          price: { type: "NUMBER" },
-                          quantity: { type: "NUMBER" }
+                          name: { type: "string" },
+                          price: { type: "number" },
+                          quantity: { type: "number" }
                         },
                         required: ["name", "price"]
                       }
@@ -1465,7 +1454,7 @@
           saveState();
           render();
           syncFormFields();
-          showToast('真實辨識失敗，已啟用智慧備用 OCR 模擬模組 ⚡');
+          showToast('實時辨識失敗，已啟用備用極速模擬 OCR 模組 ⚡');
         }, 1200);
       }
     }
