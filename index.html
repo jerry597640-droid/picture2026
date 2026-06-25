@@ -2674,26 +2674,34 @@ JSON Schema:
     }
 
     function extractStrictTotal(lines) {
-      const strongTotal = /(総合計|合計金額|税込合計|お支払金額|お買上額|ご請求|請求金額|支払金額|支払額|お支払|合\s*計|總\s*計|总\s*计|grand\s*total|amount\s*due|balance\s*due|total)/i;
-      const weakButAcceptable = /(小計|subtotal)/i;
-      const excluded = /(税|tax|消費税|內税|内税|対象|預|釣|change|現金|cash|card|visa|master|電話|tel|登録番号|no\.?)/i;
-      let candidate = 0;
-      for (const line of lines) {
-        if (excluded.test(line) && !strongTotal.test(line)) continue;
-        const nums = extractMoneyCandidates(line);
-        if (!nums.length) continue;
-        if (strongTotal.test(line)) candidate = Math.max(candidate, nums[nums.length - 1]);
+      // 超保守總金額擷取：只接受明確總額關鍵字同一行或相鄰下一行的金額。
+      // 不再使用「最大金額」或「唯一金額」推測，避免把電話、日期、單價誤當總額。
+      const strongTotal = /(総合計|合計金額|税込合計|お支払金額|お支払い金額|お買上額|ご請求|請求金額|支払金額|支払額|お支払|合\s*計|總\s*計|总\s*计|grand\s*total|amount\s*due|balance\s*due|total\s*amount|\btotal\b)/i;
+      const excluded = /(税|tax|消費税|內税|内税|対象|預|釣|change|電話|tel|登録番号|no\.?|invoice\s*no|receipt\s*no)/i;
+      const candidates = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i] || '';
+        if (!strongTotal.test(line)) continue;
+
+        const nums = extractMoneyCandidates(line)
+          .filter(v => v > 0 && v < 5000000);
+        if (nums.length && !(excluded.test(line) && !/(合\s*計|總\s*計|総合計|total)/i.test(line))) {
+          candidates.push({ value: nums[nums.length - 1], evidence: line });
+          continue;
+        }
+
+        // 有些日本收據會把「合計」與金額分兩行，僅允許往後看一行。
+        const next = lines[i + 1] || '';
+        if (next && !excluded.test(next) && !isLikelyDateLine(next)) {
+          const nextNums = extractMoneyCandidates(next).filter(v => v > 0 && v < 5000000);
+          if (nextNums.length === 1) candidates.push({ value: nextNums[0], evidence: `${line} / ${next}` });
+        }
       }
-      if (candidate > 0) return candidate;
-      // 沒有明確「合計/Total」時，只接受唯一金額候選，避免把電話、日期或單價當總額。
-      const moneyLines = [];
-      for (const line of lines) {
-        if (excluded.test(line) || isLikelyDateLine(line)) continue;
-        const nums = extractMoneyCandidates(line).filter(v => v > 0);
-        if (weakButAcceptable.test(line) && nums.length) return nums[nums.length - 1];
-        if (nums.length === 1 && hasCjkOrLetters(line)) moneyLines.push(nums[0]);
-      }
-      return moneyLines.length === 1 ? moneyLines[0] : 0;
+
+      if (!candidates.length) return { amount: 0, evidence: '' };
+      // 若有多個總額候選，取最後出現者；多數收據最終總額在後段。
+      return candidates[candidates.length - 1];
     }
 
     function inferStrictCategory(raw) {
@@ -2716,55 +2724,37 @@ JSON Schema:
       const raw = String(rawText || '');
       const lines = raw.split(/\r?\n/).map(normalizeOcrLine).filter(Boolean);
 
+      // 店名只在前 6 行中找高可信候選；分數不到門檻就留空。
       let bestStore = '';
       let bestScore = -999;
-      lines.slice(0, 10).forEach((line, idx) => {
+      lines.slice(0, 6).forEach((line, idx) => {
         const s = scoreStoreLine(line, idx);
         if (s > bestScore) { bestScore = s; bestStore = line; }
       });
-      if (bestScore < 45) bestStore = '';
+      if (bestScore < 75) bestStore = '';
 
-      const totalAmount = extractStrictTotal(lines);
-      const items = [];
-      const skipItem = /合計|總計|総合計|总计|小計|subtotal|total|お支払|支払|請求|消費税|税|tax|現金|cash|card|visa|master|預|釣|change|電話|tel|登録番号|領収|領收|receipt|invoice|date|日時|日付|対象|税率/i;
-      for (const line of lines) {
-        if (skipItem.test(line) || isLikelyDateLine(line) || !hasCjkOrLetters(line)) continue;
-        const nums = extractMoneyCandidates(line);
-        if (!nums.length) continue;
-        const price = nums[nums.length - 1];
-        if (!Number.isFinite(price) || price <= 0) continue;
-        if (totalAmount > 0 && price > totalAmount) continue;
-        let name = line
-          .replace(/(?:[¥￥$€£]\s*)?\d{1,3}(?:[,，.]\d{3})+(?:\.\d+)?|(?:[¥￥$€£]\s*)?\d+(?:[.,]\d+)?/g, '')
-          .replace(/[×x*]\s*\d*/ig, '')
-          .replace(/[:：\-]/g, ' ')
-          .trim();
-        name = cleanReceiptText(name);
-        if (name.length >= 2 && name.length <= 40) items.push({ name, price, quantity: 1 });
-      }
+      const total = extractStrictTotal(lines);
+      const totalAmount = Number(total.amount || 0);
 
-      const uniqueItems = [];
-      const seen = new Set();
-      for (const it of items) {
-        const key = `${it.name}|${it.price}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        uniqueItems.push(it);
-      }
-
+      // 防幻覺策略：照片 OCR 不再自動拆品項。
+      // OCR 對品項最容易把地址、電話、稅額、折扣、單價混在一起；預設保留空白列讓使用者依照片核對。
       const result = {
         storeName: bestStore,
         date: extractStrictDate(raw),
         totalAmount,
         currency: extractStrictCurrency(raw, activeTrip.currency || 'JPY'),
         suggestedCategory: inferStrictCategory(raw),
-        items: uniqueItems.slice(0, 10),
+        items: [{ name: '', price: 0, quantity: 1 }],
         sourceOcrText: raw,
-        recognitionMode: 'strict_ocr_only'
+        recognitionMode: 'strict_ocr_evidence_only',
+        evidence: {
+          storeLine: bestStore,
+          storeScore: bestScore,
+          totalLine: total.evidence || '',
+          ocrLineCount: lines.length
+        }
       };
 
-      // 表單至少保留一列空白，方便使用者核對補填；這不是辨識結果。
-      if (!result.items.length) result.items = [{ name: '', price: 0, quantity: 1 }];
       return result;
     }
 
@@ -2790,10 +2780,10 @@ JSON Schema:
       panel.className = 'bg-emerald-50 border border-emerald-100 rounded-2xl p-3 text-xs text-emerald-900 space-y-2';
       panel.innerHTML = `
         <div class="flex items-center justify-between gap-2">
-          <div class="font-black">🛡️ 防幻覺模式：以下欄位只從 OCR 原文抽取</div>
+          <div class="font-black">🛡️ 防幻覺模式：只填入有明確 OCR 證據的欄位</div>
           <button type="button" onclick="toggleOcrRawText()" class="text-[11px] font-bold text-emerald-700 underline">顯示/隱藏 OCR 原文</button>
         </div>
-        <div id="ocr-confidence-note" class="text-[11px] text-emerald-700 leading-relaxed">看不清楚的欄位會留空或為 0，請依照片人工核對後再儲存。</div>
+        <div id="ocr-confidence-note" class="text-[11px] text-emerald-700 leading-relaxed">看不清楚的欄位會留空或為 0；品項不自動猜測，請依照片人工核對。</div>
         <pre id="ocr-raw-text-box" class="hidden max-h-36 overflow-auto whitespace-pre-wrap bg-white border border-emerald-100 rounded-xl p-2 text-[10px] text-slate-600"></pre>
       `;
       form.insertBefore(panel, form.firstChild);
@@ -2814,9 +2804,10 @@ JSON Schema:
         if (!state.parsedData?.storeName) missing.push('店家');
         if (!state.parsedData?.date) missing.push('日期');
         if (!state.parsedData?.totalAmount) missing.push('總金額');
+        const evidence = state.parsedData?.evidence?.totalLine ? `總金額依據：「${state.parsedData.evidence.totalLine}」。` : '';
         note.innerText = missing.length
-          ? `未從照片中可靠讀到：${missing.join('、')}。系統已留空/0，避免自動腦補。`
-          : '已從 OCR 原文抽取可辨識欄位；仍建議依照片核對一次。';
+          ? `未從照片中可靠讀到：${missing.join('、')}。系統已留空/0，避免自動腦補。${evidence}`
+          : `已從 OCR 原文抽取可辨識欄位；仍建議依照片核對一次。${evidence}`;
       }
     }
 
@@ -2870,8 +2861,8 @@ JSON Schema:
         state.lastParsedBackup = parsed;
         state.lastPreviewBackup = base64DataUrl;
         saveState(); render(); syncFormFields(); updateOcrReviewPanel();
-        if (!parsed.storeName || !parsed.date || !parsed.totalAmount) showToast('OCR 已完成；不確定欄位已留空，請依照片補齊 🛡️');
-        else showToast('OCR 已完成；資料已依照片文字填入，請核對後儲存 🛡️');
+        if (!parsed.storeName || !parsed.date || !parsed.totalAmount) showToast('OCR 已完成；沒有明確證據的欄位已留空，請依照片補齊 🛡️');
+        else showToast('OCR 已完成；僅填入有明確證據的欄位，品項請自行核對 🛡️');
       } else {
         console.warn('OCR 無有效文字，進入人工核對。', lastError);
         state.parsedData = createManualPhotoDraft(fileName);
@@ -2889,7 +2880,7 @@ JSON Schema:
     }
 
     function migrateAntiHallucinationStorage() {
-      const versionKey = 'travel_scan_anti_hallucination_v1';
+      const versionKey = 'travel_scan_anti_hallucination_v2';
       if (localStorage.getItem(versionKey) === 'done') return;
       // 以前版本可能曾把模擬/猜測資料存成草稿或還原備份；升級後先清掉，避免再次顯示幻覺資料。
       localStorage.removeItem('travel_scan_last_parsed_backup_html');
