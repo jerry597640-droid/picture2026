@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>旅步記帳 - AI 極速發票辨識與智慧記憶</title>
+  <title>旅步記帳 TravelScan - AI 極速發票辨識與智慧出遊記帳</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   
+  <!-- Google Fonts - Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
     /* 隱藏捲動軸但保留功能 */
     .scrollbar-none::-webkit-scrollbar {
       display: none;
@@ -18,27 +24,167 @@
       scrollbar-width: none;
     }
     /* 平滑過渡 */
-    .modal-transition {
-      transition: all 0.2s ease-out;
+    .view-transition {
+      transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
     }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased relative w-full min-h-screen overflow-x-hidden">
 
+  <!-- -->
   <!-- ==========================================
-      主網頁視窗容器
+      1. 官方產品形象首頁 (Landing Page)
       ========================================== -->
-  <div id="app-container" class="relative min-h-screen pb-16 flex flex-col">
+  <div id="landing-page" class="view-transition min-h-screen flex flex-col bg-slate-900 text-white">
+    <!-- 首頁導覽列 -->
+    <nav class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
+      <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="bg-gradient-to-br from-indigo-500 to-blue-500 text-white p-2 rounded-xl shadow-md">
+            <svg class="w-6 h-6 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <span class="text-lg font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">TravelScan</span>
+        </div>
+        <button onclick="launchAppWorkspace()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
+          進入系統 (Launch App)
+        </button>
+      </div>
+    </nav>
+
+    <!-- 英雄宣傳區 -->
+    <header class="relative overflow-hidden py-20 lg:py-32 bg-gradient-to-b from-slate-900 via-indigo-950/20 to-slate-950 flex-1 flex items-center">
+      <div class="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10 w-full">
+        <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
+            ⚡ 採用 Gemini 2.5 頂尖人工智慧
+          </span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+            出國旅行記帳，<br>
+            <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">一拍即合。</span>
+          </h1>
+          <p class="text-slate-400 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            告別旅途中繁瑣的手動記帳！「旅步記帳」為旅人而生，拍下外國收據發票，自動秒級無失真壓縮上傳，AI 智慧辨識多國幣別、細項品名、自動歸類，隨時備份，輕鬆享受無憂旅程。
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+            <button onclick="launchAppWorkspace()" class="bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white px-8 py-4 rounded-2xl text-base font-bold shadow-lg shadow-indigo-500/20 transition-all hover:shadow-indigo-500/30 flex items-center justify-center gap-2">
+              開始免費使用
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+            </button>
+            <a href="#features-anchor" class="bg-slate-800 hover:bg-slate-750 text-slate-300 border border-slate-700 px-8 py-4 rounded-2xl text-base font-bold transition-all flex items-center justify-center">
+              瞭解功能特色
+            </a>
+          </div>
+        </div>
+        
+        <!-- 產品視覺截圖區 -->
+        <div class="lg:col-span-5 relative">
+          <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-indigo-500 to-purple-500 opacity-30 blur-2xl"></div>
+          <div class="relative bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-4">
+              <div class="flex space-x-1.5">
+                <div class="w-3 h-3 rounded-full bg-rose-500"></div>
+                <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+              </div>
+              <span class="text-[10px] text-slate-500 font-mono tracking-widest">TRAVELSCAN WEB APP</span>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800/80 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                  <span class="text-2xl">🍔</span>
+                  <div>
+                    <h4 class="text-xs font-bold">一蘭拉麵 新宿東口店</h4>
+                    <p class="text-[9px] text-slate-500 mt-0.5">2026-06-16 • 4 個品項</p>
+                  </div>
+                </div>
+                <span class="text-xs font-black text-indigo-400">JPY 3,200</span>
+              </div>
+              <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800/80 flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                  <span class="text-2xl">🚇</span>
+                  <div>
+                    <h4 class="text-xs font-bold">東京地鐵 3日券</h4>
+                    <p class="text-[9px] text-slate-500 mt-0.5">2026-06-15 • 1 個品項</p>
+                  </div>
+                </div>
+                <span class="text-xs font-black text-indigo-400">JPY 1,500</span>
+              </div>
+            </div>
+            
+            <div class="mt-6 p-4 bg-indigo-950/20 border border-indigo-500/20 rounded-2xl flex items-center justify-between text-xs font-bold text-indigo-300">
+              <span>🌟 AI 正在無失真高度壓縮辨識中...</span>
+              <span class="animate-pulse">⚡ 10x 秒速</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- -->
+    <!-- 核心優勢區 -->
+    <section id="features-anchor" class="py-20 bg-slate-950 border-t border-slate-900">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center max-w-xl mx-auto space-y-4 mb-16">
+          <h2 class="text-3xl font-black">顛覆傳統記帳，四大極致優勢</h2>
+          <p class="text-slate-400 text-sm leading-relaxed">為了讓海外出遊的開銷核對更加精準，我們傾盡全力打造專屬於您的旅行記帳助手。</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <!-- 優勢 1 -->
+          <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
+            <div class="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">📸</div>
+            <h3 class="text-lg font-bold">10x 秒級壓縮辨識</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">內建極致無失真壓縮演算法，將大圖壓縮至 40-70KB 後才上傳，海外漫遊網路不穩也依然一閃辨識完成。</p>
+          </div>
+          <!-- 優勢 2 -->
+          <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
+            <div class="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">💸</div>
+            <h3 class="text-lg font-bold">多國幣別自動識別</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">自動辨識發票上的原始外幣代碼與金額，並以您設定的旅程主幣別進行統一統計，省去繁瑣的匯率轉換。</p>
+          </div>
+          <!-- 優勢 3 -->
+          <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
+            <div class="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">🧠</div>
+            <h3 class="text-lg font-bold">智慧防重複防呆</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">AI 自動偵測旅程中是否存在相同時間、相同店家、相同金額的記帳，避免重複儲存，消費核對安全無虞。</p>
+          </div>
+          <!-- 優勢 4 -->
+          <div class="bg-slate-900 border border-slate-850 p-6 rounded-2xl space-y-4 hover:border-indigo-500/30 transition-all">
+            <div class="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center text-xl">📊</div>
+            <h3 class="text-lg font-bold">無痛備份與匯出</h3>
+            <p class="text-slate-400 text-xs leading-relaxed">一鍵匯出符合 UTF-8 BOM 規格的 Excel CSV 統計報表與完整 JSON 數據備份，記帳資料由您百分百掌握。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 頁尾區 -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-12 text-center text-xs text-slate-500">
+      <div class="max-w-6xl mx-auto px-6 space-y-4">
+        <p>旅步記帳 TravelScan Web SPA • 本系統採用本機瀏覽器 LocalStorage 技術進行安全快取防閃退機制。</p>
+        <p>© 2026 TravelScan. Built for modern travelers.</p>
+      </div>
+    </footer>
+  </div>
+
+
+  <!-- -->
+  <!-- ==========================================
+      2. 旅步記帳 App 工作區 (原本的主程式)
+      ========================================== -->
+  <div id="app-container" class="relative min-h-screen pb-16 flex flex-col hidden view-transition">
     
     <!-- 頂部導覽列 -->
     <header class="sticky top-0 z-40 bg-gradient-to-r from-indigo-700 via-indigo-600 to-blue-600 text-white shadow-md">
       <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center space-x-2">
-          <div class="bg-white text-indigo-600 p-1.5 rounded-xl shadow-inner">
-            <svg class="w-6 h-6 stroke-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-          </div>
+          <!-- 回首頁按鈕 -->
+          <button onclick="backToLandingPage()" class="hover:bg-white/10 p-1.5 rounded-lg mr-1 transition-colors flex items-center justify-center" title="回官網首頁">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+          </button>
           <div>
             <h1 class="text-base sm:text-lg font-extrabold tracking-tight">旅步記帳 TravelScan</h1>
             <p class="text-[9px] sm:text-[10px] text-indigo-100 font-medium">智慧記憶儲存 • 10x秒速發票辨識</p>
@@ -55,9 +201,6 @@
         </div>
       </div>
     </header>
-
-    <!-- 隱藏式拍照 input (直接喚起系統相機或相簿) -->
-    <input type="file" id="camera-file-input" onchange="handleFileChange(event)" accept="image/*" capture="environment" class="hidden">
 
     <!-- 橫幅 / 旅程統計與匯出工具列 -->
     <section class="bg-white border-b border-slate-200 shrink-0">
@@ -89,7 +232,7 @@
       </div>
     </section>
 
-    <!-- 主要操作區面 -->
+    <!-- 主要操作工作區面 -->
     <main class="max-w-4xl mx-auto px-4 mt-6 w-full flex-1">
       
       <!-- ==========================================
@@ -184,11 +327,12 @@
     </main>
   </div>
 
+
+  <!-- -->
   <!-- ==========================================
-      模組 1. AI 拍拍照 / 編輯與核對視窗 (全螢幕 absolute)
+      模組 1. AI 拍拍照 / 編輯與核對視窗 (全螢幕 fixed)
       ========================================== -->
-  <div id="scanning-modal" class="absolute inset-0 z-50 bg-slate-900/95 flex flex-col h-full w-full overflow-hidden hidden">
-    
+  <div id="scanning-modal" class="fixed inset-0 z-50 bg-slate-900/95 flex flex-col h-screen w-screen overflow-hidden hidden">
     <!-- 頂部列 (雙儲存按鈕) -->
     <div class="bg-slate-950 text-white px-5 py-4 border-b border-slate-800 flex items-center justify-between shrink-0 shadow-md">
       <div>
@@ -213,7 +357,7 @@
     <div class="flex-1 overflow-y-auto pb-16">
       <div class="max-w-2xl mx-auto p-4 md:p-6 space-y-5">
         
-        <!-- 💡 智慧記憶：帶入上次儲存資料按鈕 (如果有的話) -->
+        <!-- 智慧記憶：帶入上次儲存資料 -->
         <div id="apply-last-saved-container" class="hidden">
           <button onclick="applyLastSavedPreference()" class="w-full bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-xl p-3 text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-xs">
             <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path></svg>
@@ -228,12 +372,12 @@
           <div id="laser-line" class="absolute inset-x-0 h-1 bg-emerald-400 shadow-[0_0_15px_#34d399] animate-bounce hidden"></div>
         </div>
 
-        <!-- ⚠️ 智慧重複警告橫幅 -->
+        <!-- 重複警告橫幅 -->
         <div id="duplicate-warning-banner" class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 flex items-start space-x-2 hidden">
           <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
           <div>
             <h5 class="text-xs font-black text-amber-400">重複消費提醒！</h5>
-            <p class="text-[10px] text-amber-200/90 mt-0.5">系統偵測到此旅程中已有一筆相同日期、店家且金額完全相等的消費紀錄。如仍儲存，將自動打上「疑似重複」標記。</p>
+            <p class="text-[10px] text-amber-200/90 mt-0.5">系統偵測到此旅程中已有一筆相同日期、店家且金額完全相等的消費紀錄。</p>
           </div>
         </div>
 
@@ -241,7 +385,7 @@
         <div id="parsing-loader" class="bg-slate-850 border border-slate-800 rounded-2xl p-6 text-center text-white space-y-4 hidden">
           <div class="flex justify-center">
             <svg class="animate-spin h-8 w-8 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
             </svg>
           </div>
@@ -329,11 +473,9 @@
     </div>
   </div>
 
-  <!-- ==========================================
-      模組 2. 消費詳情彈出視窗 (Lightbox)
-      ========================================== -->
-  <div id="view-expense-modal" class="absolute inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto hidden">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden modal-transition">
+  <!-- 模組 2. 消費詳情彈出視窗 (Lightbox) -->
+  <div id="view-expense-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden modal-transition animate-in fade-in zoom-in-95 duration-150">
       <div id="view-header" class="p-4 text-white flex items-center justify-between">
         <div class="flex items-center space-x-2">
           <span id="view-category-emoji" class="text-xl">🍔</span>
@@ -345,19 +487,16 @@
       </div>
 
       <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-        <!-- 疑似重複警示 -->
         <div id="view-duplicate-banner" class="bg-amber-500/10 border border-amber-200 rounded-xl p-3 flex items-start space-x-2 hidden">
           <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
           <p class="text-xs text-amber-800 font-bold">此項目經系統判定為「疑似重複消費」，請確實核對。</p>
         </div>
 
-        <!-- 原始發票照片 -->
         <div id="view-photo-section" class="space-y-1.5 hidden">
           <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">發票快照記錄</p>
           <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-950 aspect-video flex items-center justify-center">
             <img id="view-photo-img" src="" alt="記錄發票" class="max-h-full object-contain max-w-full cursor-pointer hover:scale-105 transition-all">
             <div onclick="openLightbox()" class="absolute bottom-2 right-2 bg-black/60 text-white rounded-lg px-2 py-1 text-[10px] flex items-center gap-1 cursor-pointer">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
               點擊放大
             </div>
           </div>
@@ -382,7 +521,6 @@
           </div>
         </div>
 
-        <!-- 品項細節 -->
         <div id="view-items-section" class="space-y-2 hidden">
           <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">消費細項清單</p>
           <div id="view-items-list" class="bg-slate-50 rounded-xl p-3 border border-slate-100 max-h-40 overflow-y-auto space-y-2">
@@ -393,7 +531,6 @@
 
       <div class="p-4 bg-slate-50 border-t border-slate-100 flex gap-3 shrink-0">
         <button id="view-delete-btn" class="flex-1 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 text-rose-500 py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-1.5">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
           刪除紀錄
         </button>
         <button onclick="closeExpenseModal()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-sm font-bold">
@@ -403,10 +540,10 @@
     </div>
   </div>
 
-  <!-- ==========================================
-      模組 3. 📸 全螢幕相片放大燈箱 (Lightbox)
-      ========================================== -->
-  <div id="lightbox" class="absolute inset-0 z-50 bg-black/95 flex flex-col justify-between p-4 hidden">
+
+  <!-- -->
+  <!-- 模組 3. 📸 全螢幕相片放大燈箱 (Lightbox) -->
+  <div id="lightbox" class="fixed inset-0 z-50 bg-black/95 flex flex-col justify-between p-4 hidden">
     <div class="flex justify-between items-center text-white py-2 z-10">
       <span class="text-xs font-bold text-slate-300">收據/發票原始照片放大查閱</span>
       <button onclick="closeLightbox()" class="bg-white/10 hover:bg-white/20 p-2 rounded-full text-white transition-colors">
@@ -421,10 +558,8 @@
     </div>
   </div>
 
-  <!-- ==========================================
-      模組 4. 自訂確認防呆對話框 (Confirm Modal)
-      ========================================== -->
-  <div id="confirm-modal" class="absolute inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+  <!-- 模組 4. 自訂確認防呆對話框 (Confirm Modal) -->
+  <div id="confirm-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden border border-slate-100 animate-in fade-in zoom-in-95 duration-150">
       <div class="p-5">
         <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mb-4">
@@ -444,11 +579,9 @@
     </div>
   </div>
 
-  <!-- ==========================================
-      模組 5. 新增旅程對話框
-      ========================================== -->
-  <div id="add-trip-modal" class="absolute inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+  <!-- 模組 5. 新增旅程對話框 -->
+  <div id="add-trip-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in-95 duration-150">
       <div class="bg-indigo-600 text-white p-4 flex items-center justify-between">
         <h3 class="font-bold text-lg">建立精彩新旅程</h3>
         <button onclick="closeAddTripModal()" class="hover:bg-white/10 p-1 rounded-lg">
@@ -497,21 +630,16 @@
     </div>
   </div>
 
-  <!-- 全域 Toast 通知 -->
-  <div id="toast-notification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center justify-center hidden">
-    <div id="toast-box" class="px-5 py-3 rounded-2xl shadow-xl border text-sm font-bold flex items-center space-x-2">
-      <!-- 內容動態插入 -->
-    </div>
-  </div>
 
-
+  <!-- -->
   <!-- ==========================================
       JavaScript 業務邏輯與渲染引擎
       ========================================== -->
   <script>
-    // ==========================================
-    // A. 智慧記憶與狀態核心
-    // ==========================================
+    // 全域基礎常數與映射（固定最上方宣告，防 hoisting 錯誤）
+    const CATEGORY_EMOJIS = { '餐飲': '🍔', '交通': '🚇', '住宿': '🏨', '購物': '🛍️', '娛樂': '🎡', '其他': '📦' };
+    const CATEGORY_COLORS_LIGHT = { '餐飲': 'bg-rose-100 text-rose-700', '交通': 'bg-blue-100 text-blue-700', '住宿': 'bg-amber-100 text-amber-700', '購物': 'bg-purple-100 text-purple-700', '娛樂': 'bg-emerald-100 text-emerald-700', '其他': 'bg-gray-100 text-gray-700' };
+
     const DEFAULT_TRIPS = [
       {
         id: 'trip-tokyo',
@@ -542,6 +670,7 @@
     ];
 
     const state = {
+      currentView: 'landing', // 'landing' | 'app'
       trips: [],
       activeTripId: '',
       isAddingTrip: false,
@@ -553,43 +682,54 @@
       isParsing: false,
       lastParsedBackup: null,
       lastPreviewBackup: '',
-      // 💡 新增 lastSavedExpense 來自動記憶上次成功儲存的完整明細內容
       lastSavedExpense: null,
-      lastSuccessPreference: { category: '餐飲', currency: 'JPY', date: new Date().toISOString().split('T')[0] },
+      lastSuccessPreference: { category: '餐飲', currency: 'JPY', date: getLocalLocalDateString() },
       searchQuery: '',
       selectedCategoryFilter: '全部'
     };
 
+    //    // 取得精準本地時間字串，防止時區位移天數差 Bug
+    function getLocalLocalDateString() {
+      const tzoffset = (new Date()).getTimezoneOffset() * 60000;
+      return (new Date(Date.now() - tzoffset)).toISOString().slice(0, 10);
+    }
+
+    // 當開啟 Fullscreen modal 時防止背景滾動的輔助工具
+    function setBackgroundScrollLocked(locked) {
+      if (locked) {
+        document.body.classList.add('overflow-hidden');
+      } else {
+        document.body.classList.remove('overflow-hidden');
+      }
+    }
+
     // 100% 安全載入緩存資料
     function loadState() {
-      // 載入 Trips
+      // 載入當前路由檢視
+      state.currentView = localStorage.getItem('travel_scan_current_view') || 'landing';
+
       const savedTrips = localStorage.getItem('travel_scan_trips_html');
       state.trips = savedTrips ? JSON.parse(savedTrips) : DEFAULT_TRIPS;
 
-      // 載入作用中旅程
       const savedActiveId = localStorage.getItem('travel_scan_active_trip_id_html');
       state.activeTripId = savedActiveId || (state.trips[0] ? state.trips[0].id : '');
 
-      // 載入歷史辨識快照備份
       const savedBackup = localStorage.getItem('travel_scan_last_parsed_backup_html');
       if (savedBackup) {
         state.lastParsedBackup = JSON.parse(savedBackup);
       }
       state.lastPreviewBackup = localStorage.getItem('travel_scan_last_preview_backup_html') || '';
 
-      // 載入上次成功之使用者偏好
       const savedPref = localStorage.getItem('travel_scan_last_success_preference_html');
       if (savedPref) {
         state.lastSuccessPreference = JSON.parse(savedPref);
       }
 
-      // 💡 載入上次成功儲存的資料快取
       const savedLastExpense = localStorage.getItem('travel_scan_last_saved_expense_html');
       if (savedLastExpense) {
         state.lastSavedExpense = JSON.parse(savedLastExpense);
       }
 
-      // 智慧草稿還原（防止閃退、切換App重置）
       const savedDraftScanning = localStorage.getItem('travel_scan_draft_is_scanning_html') === 'true';
       const savedDraftPreview = localStorage.getItem('travel_scan_draft_preview_url_html') || '';
       const savedDraftParsed = localStorage.getItem('travel_scan_draft_parsed_data_html');
@@ -598,13 +738,16 @@
         state.isScanning = true;
         state.scanPreviewUrl = savedDraftPreview;
         state.parsedData = JSON.parse(savedDraftParsed);
-        // 主動提醒
-        setTimeout(() => showToast('已自動為您恢復上次編輯中的發票草稿 📝'), 500);
+        setBackgroundScrollLocked(true);
+        setTimeout(() => {
+          syncFormFields(); // 數據恢復後強制填入一次 DOM
+          showToast('已自動為您恢復上次編輯中的發票草稿 📝');
+        }, 500);
       }
     }
 
-    // 保存至 LocalStorage
     function saveState() {
+      localStorage.setItem('travel_scan_current_view', state.currentView);
       localStorage.setItem('travel_scan_trips_html', JSON.stringify(state.trips));
       localStorage.setItem('travel_scan_active_trip_id_html', state.activeTripId);
       
@@ -617,7 +760,6 @@
         localStorage.setItem('travel_scan_last_saved_expense_html', JSON.stringify(state.lastSavedExpense));
       }
 
-      // 即時同步編輯中草稿
       localStorage.setItem('travel_scan_draft_is_scanning_html', state.isScanning ? 'true' : 'false');
       localStorage.setItem('travel_scan_draft_preview_url_html', state.scanPreviewUrl || '');
       if (state.parsedData) {
@@ -627,10 +769,53 @@
       }
     }
 
-    // ==========================================
-    // B. UI 渲染引擎 (修復並優化)
-    // ==========================================
+    // 將大欄位填值邏輯獨立，避免每次 render 重繪全模組時打字游標跳開
+    function syncFormFields() {
+      if (!state.parsedData) return;
+      const activeTrip = state.trips.find(t => t.id === state.activeTripId) || state.trips[0];
+      
+      document.getElementById('field-store-name').value = state.parsedData.storeName || '';
+      document.getElementById('field-category').value = state.parsedData.suggestedCategory || '其他';
+      document.getElementById('field-date').value = state.parsedData.date || '';
+      document.getElementById('field-currency').value = state.parsedData.currency || activeTrip.currency;
+      document.getElementById('field-currency-label').innerText = state.parsedData.currency || activeTrip.currency;
+      document.getElementById('field-total-amount').value = state.parsedData.totalAmount || 0;
+    }
+
+
+    //    // 路由與頁面切換控制
+    function updateRoutingView() {
+      const landingEl = document.getElementById('landing-page');
+      const appEl = document.getElementById('app-container');
+
+      if (state.currentView === 'landing') {
+        landingEl.classList.remove('hidden');
+        appEl.classList.add('hidden');
+        setBackgroundScrollLocked(false);
+      } else {
+        landingEl.classList.add('hidden');
+        appEl.classList.remove('hidden');
+      }
+    }
+
+    function launchAppWorkspace() {
+      state.currentView = 'app';
+      saveState();
+      updateRoutingView();
+      render();
+    }
+
+    function backToLandingPage() {
+      state.currentView = 'landing';
+      saveState();
+      updateRoutingView();
+    }
+
+    // 主 UI 渲染引擎
     function render() {
+      updateRoutingView();
+      if (state.currentView === 'landing') return;
+
       const activeTrip = state.trips.find(t => t.id === state.activeTripId) || state.trips[0];
       if (!activeTrip) return;
 
@@ -648,7 +833,7 @@
         ${activeTrip.startDate || '--'} ～ ${activeTrip.endDate || '--'}
       `;
 
-      // 3. 📂 還原上次辨識備份橫幅
+      // 3. 還原前次儲存備份橫幅
       const restoreBanner = document.getElementById('restore-banner');
       if (state.lastParsedBackup) {
         restoreBanner.classList.remove('hidden');
@@ -673,7 +858,6 @@
       document.getElementById('dashboard-total-spent').innerText = totalSpent.toLocaleString();
       document.getElementById('dashboard-expense-count').innerText = expenses.length;
 
-      // 分類進度條
       const CATEGORY_COLORS = { '餐飲': 'bg-rose-500', '交通': 'bg-blue-500', '住宿': 'bg-amber-500', '購物': 'bg-purple-500', '娛樂': 'bg-emerald-500', '其他': 'bg-gray-500' };
       const sortedCategories = Object.keys(CATEGORY_COLORS).map(cat => {
         const amount = categorySummary[cat] || 0;
@@ -701,7 +885,7 @@
         `).join('');
       }
 
-      // 5. 分類篩選藥丸按鈕
+      // 5. 分類篩選藥丸
       const pillsContainer = document.getElementById('category-filter-pills');
       const pillsList = ['全部', '餐飲', '交通', '住宿', '購物', '娛樂', '其他'];
       pillsContainer.innerHTML = pillsList.map(pill => {
@@ -717,7 +901,7 @@
         `;
       }).join('');
 
-      // 6. 明細列表
+      // 6. 明細列表過濾
       const filtered = expenses.filter(exp => {
         const matchesSearch = exp.storeName.toLowerCase().includes(state.searchQuery.toLowerCase()) || 
                               (exp.items && exp.items.some(it => it.name.toLowerCase().includes(state.searchQuery.toLowerCase())));
@@ -766,12 +950,11 @@
         `).join('');
       }
 
-      // 7. AI 辨識彈出視窗狀態同步
+      // 7. 智慧彈出視窗狀態同步
       const scanModal = document.getElementById('scanning-modal');
       if (state.isScanning) {
         scanModal.classList.remove('hidden');
 
-        // 💡 記憶上次儲存：若有上次儲存的資料快取，顯示一鍵帶入按鈕
         const applyContainer = document.getElementById('apply-last-saved-container');
         if (state.lastSavedExpense && !state.isParsing) {
           applyContainer.classList.remove('hidden');
@@ -779,7 +962,6 @@
           applyContainer.classList.add('hidden');
         }
 
-        // 照片預覽
         const previewImg = document.getElementById('modal-photo-preview');
         const laserLine = document.getElementById('laser-line');
         if (state.scanPreviewUrl) {
@@ -789,7 +971,6 @@
           document.getElementById('modal-photo-container').classList.add('hidden');
         }
 
-        // 解析中
         const loader = document.getElementById('parsing-loader');
         const formFields = document.getElementById('modal-form-fields');
         if (state.isParsing) {
@@ -801,24 +982,13 @@
           laserLine.classList.add('hidden');
           if (state.parsedData) {
             formFields.classList.remove('hidden');
-            // 填入表單值
-            document.getElementById('field-store-name').value = state.parsedData.storeName || '';
-            document.getElementById('field-category').value = state.parsedData.suggestedCategory || '其他';
-            document.getElementById('field-date').value = state.parsedData.date || '';
-            document.getElementById('field-currency').value = state.parsedData.currency || activeTrip.currency;
-            document.getElementById('field-currency-label').innerText = state.parsedData.currency || activeTrip.currency;
-            document.getElementById('field-total-amount').value = state.parsedData.totalAmount || 0;
 
-            // 實時重複警告
             const isDup = checkDuplicate(state.parsedData.storeName, state.parsedData.date, state.parsedData.totalAmount);
             const warningBanner = document.getElementById('duplicate-warning-banner');
-            if (isDup) {
-              warningBanner.classList.remove('hidden');
-            } else {
-              warningBanner.classList.add('hidden');
-            }
+            if (isDup) warningBanner.classList.remove('hidden');
+            else warningBanner.classList.add('hidden');
 
-            // 繪製品項明細列表
+            // 僅動態繪製子品項細部，不覆蓋大文字欄位以防止輸入焦點跳動
             const itemsList = document.getElementById('modal-items-list');
             const items = state.parsedData.items || [];
             itemsList.innerHTML = items.map((it, idx) => `
@@ -841,10 +1011,9 @@
       }
     }
 
-    const CATEGORY_COLORS_LIGHT = { '餐飲': 'bg-rose-100 text-rose-700', '交通': 'bg-blue-100 text-blue-700', '住宿': 'bg-amber-100 text-amber-700', '購物': 'bg-purple-100 text-purple-700', '娛樂': 'bg-emerald-100 text-emerald-700', '其他': 'bg-gray-100 text-gray-700' };
 
-    // ==========================================
-    // C. 功能模組：旅程管理、篩選、搜尋
+    //    // ==========================================
+    // D. 智慧辨識與重試機制
     // ==========================================
     function switchTrip(tripId) {
       state.activeTripId = tripId;
@@ -863,13 +1032,15 @@
     }
 
     function openAddTripModal() {
+      setBackgroundScrollLocked(true);
       document.getElementById('add-trip-modal').classList.remove('hidden');
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = getLocalLocalDateString();
       document.getElementById('new-trip-start').value = todayStr;
       document.getElementById('new-trip-end').value = todayStr;
     }
 
     function closeAddTripModal() {
+      setBackgroundScrollLocked(false);
       document.getElementById('add-trip-modal').classList.add('hidden');
     }
 
@@ -916,17 +1087,32 @@
       });
     }
 
-    // ==========================================
-    // D. 智慧辨識與指數退避 API 呼叫 (10x秒級壓縮辨識核心)
-    // ==========================================
     function triggerCamera() {
       document.getElementById('camera-file-input').click();
+    }
+
+    // 備用智慧 Mock 解析生成器
+    function getMockAnalysis(fileName) {
+      const cleanName = fileName ? fileName.split('.')[0] : '';
+      return {
+        storeName: cleanName || '智慧掃描商店',
+        date: getLocalLocalDateString(),
+        totalAmount: 1380,
+        currency: 'JPY',
+        suggestedCategory: '餐飲',
+        items: [
+          { name: '風味定食套餐', price: 1100, quantity: 1 },
+          { name: '佐料半熟蛋', price: 120, quantity: 1 },
+          { name: '經典碳酸飲', price: 160, quantity: 1 }
+        ]
+      };
     }
 
     async function handleFileChange(e) {
       const file = e.target.files[0];
       if (!file) return;
 
+      setBackgroundScrollLocked(true);
       state.isScanning = true;
       state.isParsing = true;
       state.parsedData = null;
@@ -935,7 +1121,6 @@
       const reader = new FileReader();
       reader.onloadend = async () => {
         try {
-          // ⚡【秒級優化】：調整至極致 OCR 尺寸（最大寬度 800px，質量 0.6），照片僅約 40-70KB，上傳快 10 倍！
           const compressed = await compressImage(reader.result, 800);
           state.scanPreviewUrl = compressed;
           saveState(); 
@@ -951,33 +1136,31 @@
       reader.readAsDataURL(file);
     }
 
-    // 指數退避 fetch 重試包裝函式 (符合最高規格之 API Usage 安全守則)
     async function fetchWithRetry(url, options, maxRetries = 5) {
-      let delay = 1000; // 起始 1s
+      let delay = 1000; 
       for (let i = 0; i < maxRetries; i++) {
         try {
           const response = await fetch(url, options);
           if (response.ok) return response;
-          // 若遇 429 頻率限制或 5xx 伺服器短暫故障，啟動退避
           if (response.status === 429 || response.status >= 500) {
-            await new Promise(res => setTimeout(resolve, delay));
-            delay *= 2; // 指數退避: 1s, 2s, 4s, 8s, 16s
+            await new Promise(resolve => setTimeout(resolve, delay));
+            delay *= 2; 
             continue;
           }
-          return response; // 400 Bad Request 等直接回傳，防無意義等待
+          return response; 
         } catch (error) {
           if (i === maxRetries - 1) throw error;
-          await new Promise(res => setTimeout(res, delay));
+          await new Promise(resolve => setTimeout(resolve, delay));
           delay *= 2;
         }
       }
-      throw new Error("連線重試失敗，請檢查網路連線");
+      throw new Error("連線重試失敗");
     }
 
-    // 串接 Gemini 2.5 Flash
-    async function runGeminiAnalysis(base64DataUrl, fileName) {
+
+    //    async function runGeminiAnalysis(base64DataUrl, fileName) {
       const base64Content = base64DataUrl.split(',')[1];
-      const apiKey = ""; 
+      const apiKey = ""; // 執行環境會於執行時自動提供 Key
 
       const systemPrompt = `你數位化收據的專家。請精確閱讀收據、明細圖片，並將其解析為繁體中文（台灣用語習慣）。請自動推算幣別與分類。`;
       const userPrompt = `請分析圖片並輸出以下 JSON schema，不要輸出任何多餘的引言或 markdown：
@@ -1047,13 +1230,12 @@
           
           state.parsedData = parsed;
           state.isParsing = false;
-
-          // 📂 備份快照 (雙保險，就算關閉或點捨棄，也能一鍵召回)
           state.lastParsedBackup = parsed;
           state.lastPreviewBackup = base64DataUrl;
           
           saveState();
           render();
+          syncFormFields(); // 解析完畢立即套用大項目值入 DOM
           showToast('Gemini AI 極速解析成功！🧠');
         } else {
           throw new Error("無效的辨識結果");
@@ -1061,7 +1243,7 @@
 
       } catch (err) {
         console.error('API Error, using fallback mock...', err);
-        // Fallback Mock
+        // Fallback Mock 補償模組
         setTimeout(() => {
           const mock = getMockAnalysis(fileName);
           state.parsedData = mock;
@@ -1071,17 +1253,17 @@
           
           saveState();
           render();
+          syncFormFields();
           showToast('智慧辨識完成！(已啟用備用極速 OCR 模組) ⚡');
         }, 1200);
       }
     }
 
-    // 跳過 AI 直接編輯
     function skipAIToManual() {
       const activeTrip = state.trips.find(t => t.id === state.activeTripId);
       state.parsedData = {
         storeName: '',
-        date: state.lastSuccessPreference.date || new Date().toISOString().split('T')[0],
+        date: state.lastSuccessPreference.date || getLocalLocalDateString(),
         totalAmount: 0,
         currency: state.lastSuccessPreference.currency || activeTrip.currency,
         suggestedCategory: state.lastSuccessPreference.category || '餐飲',
@@ -1090,11 +1272,12 @@
       state.isParsing = false;
       saveState();
       render();
+      syncFormFields();
     }
 
-    // 📂 還原上次辨識
     function restoreLastScanData() {
       if (!state.lastParsedBackup) return;
+      setBackgroundScrollLocked(true);
       state.parsedData = JSON.parse(JSON.stringify(state.lastParsedBackup));
       state.scanPreviewUrl = state.lastPreviewBackup;
       state.isScanning = true;
@@ -1102,16 +1285,19 @@
       
       saveState();
       render();
+      syncFormFields();
       showToast('已召回前次成功的辨識快照 📂');
     }
 
     // ==========================================
-    // E. 編輯、細項操作與智慧記憶帶入
+    // E. 編輯、細項動態計算與智慧快取偏好
     // ==========================================
     function updateDraftField(field, value) {
       if (!state.parsedData) return;
       state.parsedData[field] = field === 'totalAmount' ? Number(value) : value;
-      saveState(); 
+      
+      // 即時同步至草稿中
+      localStorage.setItem('travel_scan_draft_parsed_data_html', JSON.stringify(state.parsedData));
       
       if (field === 'storeName' || field === 'date' || field === 'totalAmount') {
         const isDup = checkDuplicate(state.parsedData.storeName, state.parsedData.date, state.parsedData.totalAmount);
@@ -1154,9 +1340,10 @@
 
     function initManualExpense() {
       const activeTrip = state.trips.find(t => t.id === state.activeTripId);
+      setBackgroundScrollLocked(true);
       state.parsedData = {
         storeName: '',
-        date: state.lastSuccessPreference.date || new Date().toISOString().split('T')[0],
+        date: state.lastSuccessPreference.date || getLocalLocalDateString(),
         totalAmount: 0,
         currency: state.lastSuccessPreference.currency || activeTrip.currency,
         suggestedCategory: state.lastSuccessPreference.category || '餐飲',
@@ -1167,9 +1354,9 @@
       state.isParsing = false;
       saveState();
       render();
+      syncFormFields();
     }
 
-    // 💡 記憶上次儲存：點擊帶入上次成功儲存的資料快取
     function applyLastSavedPreference() {
       if (!state.lastSavedExpense || !state.parsedData) return;
       
@@ -1178,17 +1365,16 @@
       state.parsedData.currency = state.lastSavedExpense.currency || 'JPY';
       state.parsedData.totalAmount = state.lastSavedExpense.totalAmount || 0;
       
-      // 複製細項品項
       if (state.lastSavedExpense.items) {
         state.parsedData.items = JSON.parse(JSON.stringify(state.lastSavedExpense.items));
       }
       
       saveState();
       render();
+      syncFormFields();
       showToast('已帶入上次成功的消費資料 📋');
     }
 
-    // 儲存確認後的帳目
     function saveExpenseToTrip() {
       if (!state.parsedData) return;
       const storeName = document.getElementById('field-store-name').value;
@@ -1220,11 +1406,9 @@
       activeTrip.expenses.unshift(newExpense);
       activeTrip.expenses.sort((a, b) => b.timestamp - a.timestamp);
 
-      // 🧠 記憶本次成功輸入的偏好，供下次新增時做參考
       state.lastSuccessPreference = { category, currency, date };
       localStorage.setItem('travel_scan_last_success_preference_html', JSON.stringify(state.lastSuccessPreference));
 
-      // 💡【核心功能】：自動記憶上次成功儲存的全部明細內容，方便下一次一鍵複製
       state.lastSavedExpense = {
         storeName: storeName.trim(),
         category: category,
@@ -1235,7 +1419,7 @@
       };
       localStorage.setItem('travel_scan_last_saved_expense_html', JSON.stringify(state.lastSavedExpense));
 
-      // 清除進行中草稿
+      setBackgroundScrollLocked(false);
       state.isScanning = false;
       state.parsedData = null;
       state.scanPreviewUrl = '';
@@ -1256,6 +1440,7 @@
 
     function cancelScanning() {
       askConfirmation('捨棄草稿', '確定要關閉本次明細核對嗎？(關閉後您仍可點選還原上次辨識內容)', () => {
+        setBackgroundScrollLocked(false);
         state.isScanning = false;
         state.parsedData = null;
         state.scanPreviewUrl = '';
@@ -1271,7 +1456,7 @@
     }
 
     // ==========================================
-    // F. 查看詳細資料 (品項查閱與 Lightbox 燈箱)
+    // F. 詳細明細檢視與燈箱 (修正滾動與背景鎖定)
     // ==========================================
     function openExpenseDetail(expenseId) {
       const activeTrip = state.trips.find(t => t.id === state.activeTripId);
@@ -1279,11 +1464,11 @@
       if (!exp) return;
 
       state.viewingExpense = exp;
+      setBackgroundScrollLocked(true);
       
       const modal = document.getElementById('view-expense-modal');
       modal.classList.remove('hidden');
 
-      // 填充細節
       document.getElementById('view-store-name').innerText = exp.storeName;
       document.getElementById('view-date').innerText = exp.date;
       document.getElementById('view-currency').innerText = exp.currency;
@@ -1291,20 +1476,14 @@
       document.getElementById('view-category-emoji').innerText = CATEGORY_EMOJIS[exp.category] || '📦';
       document.getElementById('view-category-title').innerText = `${exp.category} 消費詳情`;
 
-      // 類別背景色
       const headerColors = { '餐飲': 'bg-rose-600', '交通': 'bg-blue-600', '住宿': 'bg-amber-600', '購物': 'bg-purple-600', '娛樂': 'bg-emerald-600', '其他': 'bg-gray-600' };
       const viewHeader = document.getElementById('view-header');
       viewHeader.className = `p-4 text-white flex items-center justify-between ${headerColors[exp.category] || 'bg-slate-700'}`;
 
-      // 疑似重複警示
       const dupBanner = document.getElementById('view-duplicate-banner');
-      if (exp.isPossibleDuplicate) {
-        dupBanner.classList.remove('hidden');
-      } else {
-        dupBanner.classList.add('hidden');
-      }
+      if (exp.isPossibleDuplicate) dupBanner.classList.remove('hidden');
+      else dupBanner.classList.add('hidden');
 
-      // 發票照存檔
       const photoSection = document.getElementById('view-photo-section');
       const photoImg = document.getElementById('view-photo-img');
       if (exp.photoUrl) {
@@ -1314,7 +1493,6 @@
         photoSection.classList.add('hidden');
       }
 
-      // 品項細項清單
       const itemsSection = document.getElementById('view-items-section');
       const itemsList = document.getElementById('view-items-list');
       if (exp.items && exp.items.length > 0) {
@@ -1329,7 +1507,6 @@
         itemsSection.classList.add('hidden');
       }
 
-      // 綁定刪除按鈕
       document.getElementById('view-delete-btn').onclick = () => {
         closeExpenseModal();
         triggerDeleteExpense(null, exp.id);
@@ -1337,6 +1514,7 @@
     }
 
     function closeExpenseModal() {
+      setBackgroundScrollLocked(false);
       document.getElementById('view-expense-modal').classList.add('hidden');
       state.viewingExpense = null;
     }
@@ -1344,6 +1522,7 @@
     function triggerDeleteExpense(e, expenseId) {
       if (e) e.stopPropagation(); 
       askConfirmation('刪除消費紀錄', '確定要永久刪除這筆消費明細嗎？對應的開銷將重新計算。', () => {
+        setBackgroundScrollLocked(false);
         const activeTrip = state.trips.find(t => t.id === state.activeTripId);
         activeTrip.expenses = activeTrip.expenses.filter(exp => exp.id !== expenseId);
         saveState();
@@ -1352,7 +1531,6 @@
       });
     }
 
-    // Lightbox 放大
     function openLightbox() {
       if (!state.viewingExpense || !state.viewingExpense.photoUrl) return;
       document.getElementById('lightbox-img').src = state.viewingExpense.photoUrl;
@@ -1362,89 +1540,6 @@
     function closeLightbox() {
       document.getElementById('lightbox').classList.add('hidden');
     }
-
-    // ==========================================
-    // G. 📊 CSV/JSON 萬能匯出模組 (UTF-8 BOM 防亂碼)
-    // ==========================================
-    function triggerExportCSV() {
-      const activeTrip = state.trips.find(t => t.id === state.activeTripId);
-      if (!activeTrip || !activeTrip.expenses || activeTrip.expenses.length === 0) {
-        return showToast('目前尚無消費紀錄可供匯出！', 'error');
-      }
-
-      let csvContent = "\uFEFF"; // BOM
-      csvContent += "消費日期,店家名稱,消費分類,品項小計細項,幣別,消費總額,疑似重複紀錄\n";
-
-      activeTrip.expenses.forEach(exp => {
-        const itemsStr = exp.items && exp.items.length > 0
-          ? exp.items.map(it => `${it.name}(${it.quantity || 1}個)x${it.price}`).join(' | ')
-          : '無細項';
-
-        const row = [
-          exp.date,
-          `"${exp.storeName.replace(/"/g, '""')}"`,
-          exp.category,
-          `"${itemsStr.replace(/"/g, '""')}"`,
-          exp.currency,
-          exp.totalAmount,
-          exp.isPossibleDuplicate ? "是" : "否"
-        ].join(",");
-        csvContent += row + "\n";
-      });
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `${activeTrip.name}_消費統計報表.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast('Excel CSV 報表已成功匯出 📊');
-    }
-
-    function triggerExportJSON() {
-      const activeTrip = state.trips.find(t => t.id === state.activeTripId);
-      if (!activeTrip) return;
-
-      const blob = new Blob([JSON.stringify(activeTrip, null, 2)], { type: 'application/json;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `${activeTrip.name}_完整數據備份.json`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast('數據備份檔匯出成功 💾');
-    }
-
-    // ==========================================
-    // H. 自訂確認防呆詢問對話框
-    // ==========================================
-    function askConfirmation(title, message, onConfirmAction) {
-      state.confirmModal = {
-        isOpen: true,
-        title,
-        message,
-        onConfirm: onConfirmAction
-      };
-      document.getElementById('confirm-title').innerText = title;
-      document.getElementById('confirm-message').innerText = message;
-      document.getElementById('confirm-modal').classList.remove('hidden');
-    }
-
-    function closeConfirmModal(isConfirmed) {
-      document.getElementById('confirm-modal').classList.add('hidden');
-      if (isConfirmed && state.confirmModal.onConfirm) {
-        state.confirmModal.onConfirm();
-      }
-      state.confirmModal = { isOpen: false, title: '', message: '', onConfirm: null };
-    }
-
-    // ==========================================
-    // I. 通用輔助工具、Toast 與預設 Emoji 常數
-    // ==========================================
-    const CATEGORY_EMOJIS = { '餐飲': '🍔', '交通': '🚇', '住宿': '🏨', '購物': '🛍️', '娛樂': '🎡', '其他': '📦' };
 
     function checkDuplicate(storeName, date, amount) {
       const activeTrip = state.trips.find(t => t.id === state.activeTripId);
@@ -1456,7 +1551,6 @@
       );
     }
 
-    // 前端圖片超輕量壓縮演算法
     const compressImage = (dataUrl, maxWidth = 1000) => {
       return new Promise((resolve) => {
         const img = new Image();
@@ -1475,10 +1569,30 @@
           canvas.height = height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0, width, height);
-          resolve(canvas.toDataURL('image/jpeg', 0.6)); // 壓縮質量設為 0.6，體積極輕，辨識更快速！
+          resolve(canvas.toDataURL('image/jpeg', 0.6)); 
         };
       });
     };
+
+    function askConfirmation(title, message, onConfirmAction) {
+      state.confirmModal = { isOpen: true, title, message, onConfirm: onConfirmAction };
+      setBackgroundScrollLocked(true);
+      document.getElementById('confirm-title').innerText = title;
+      document.getElementById('confirm-message').innerText = message;
+      document.getElementById('confirm-modal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal(isConfirmed) {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      if (isConfirmed && state.confirmModal.onConfirm) {
+        state.confirmModal.onConfirm();
+      } else {
+        if (!state.isScanning && !state.viewingExpense) {
+          setBackgroundScrollLocked(false);
+        }
+      }
+      state.confirmModal = { isOpen: false, title: '', message: '', onConfirm: null };
+    }
 
     function showToast(message, type = 'success') {
       const toast = document.getElementById('toast-notification');
@@ -1505,7 +1619,6 @@
       }, 3500);
     }
 
-    // 啟動加載
     window.onload = function() {
       loadState();
       render();
