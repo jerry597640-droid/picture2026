@@ -11,7 +11,7 @@
   <!-- Google Fonts - Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Tesseract.js 瀏覽器本地端 OCR 辨識引擎 -->
+  <!-- 🌟【新增】：Tesseract.js 瀏覽器本地端 OCR 辨識引擎 -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
@@ -30,12 +30,15 @@
     .view-transition {
       transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out;
     }
+
+    /* Tailwind CDN 不會產生自訂色階，補上專案內使用的 750/850，避免樣式落空 */
+    .bg-slate-850 { background-color: #172033; }
+    .hover\:bg-slate-750:hover { background-color: #273449; }
+    .border-slate-850 { border-color: #172033; }
+    .safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased relative w-full min-h-screen overflow-x-hidden">
-
-  <!-- 🌟【iOS 相容性完美修復】：全網頁僅保留這一個唯一的檔案輸入框，且使用不影響排版的隱形樣式，完美支援 iPhone 喚起相機與相簿 -->
-  <input type="file" id="camera-file-input" onchange="handleFileChange(event)" accept="image/*" class="opacity-0 absolute w-0 h-0 pointer-events-none z-0">
 
   <!-- ==========================================
       1. 官方產品形象首頁 (Landing Page)
@@ -52,7 +55,7 @@
           </div>
           <span class="text-lg font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">TravelScan</span>
         </div>
-        <button onclick="launchAppWorkspace()" class="bg-indigo-600 hover:bg-indigo-50 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
+        <button onclick="launchAppWorkspace()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
           進入系統 (Launch App)
         </button>
       </div>
@@ -176,7 +179,7 @@
 
 
   <!-- ==========================================
-      2. 旅步記帳 App 工作區 (主程式)
+      2. 旅步記帳 App 工作區 (原本的主程式)
       ========================================== -->
   <div id="app-container" class="relative min-h-screen pb-16 flex flex-col hidden view-transition">
     
@@ -211,6 +214,9 @@
         </div>
       </div>
     </header>
+
+    <!-- 隱藏式拍照 input (直接喚起系統相機或相簿) -->
+    <input type="file" id="camera-file-input" onchange="handleFileChange(event)" accept="image/*" capture="environment" class="hidden">
 
     <!-- 橫幅 / 旅程統計與匯出工具列 -->
     <section class="bg-white border-b border-slate-200 shrink-0">
@@ -905,7 +911,6 @@
       setBackgroundScrollLocked(true);
     }
 
-    // 關閉金鑰設定
     function closeSettingsModal() {
       document.getElementById('settings-modal').classList.add('hidden');
       setBackgroundScrollLocked(false);
@@ -933,7 +938,7 @@
       switchScanTab('text');
     }
 
-    // 智慧型離線啟發式文字收據拆解器
+    // 智慧型離線啟發式文字收據拆解器 (確保沒網路或無金鑰也 100% 成功解析)
     function parseTextHeuristically(text, fileName = "") {
       const result = {
         storeName: "本地辨識商店",
@@ -954,6 +959,7 @@
       if (lines.length > 0 && result.storeName === "本地辨識商店") {
         for (let i = 0; i < Math.min(lines.length, 5); i++) {
           const l = lines[i];
+          // 如果第一行不像日期且長度合適，暫定為店家名稱
           if (l.length > 2 && !/\d{4}/.test(l) && !/total|amount|sum|price|合計|小計/i.test(l)) {
             result.storeName = l;
             break;
@@ -974,9 +980,9 @@
 
       // 3. 智慧日期定位
       const dateRegexes = [
-        /(\d{4})[-/](\d{1,2})[-/](\d{1,2})/,
-        /(\d{1,2})[-/](\d{1,2})[-/](\d{4})/,
-        /(20\d{2})年(\d{1,2})月(\d{1,2})日/
+        /(\d{4})[-/](\d{1,2})[-/](\d{1,2})/, // 2026-06-15 or 2026/06/15
+        /(\d{1,2})[-/](\d{1,2})[-/](\d{4})/, // 15/06/2026
+        /(20\d{2})年(\d{1,2})月(\d{1,2})日/ // 2026年06月15日
       ];
       
       for (const rx of dateRegexes) {
@@ -1002,7 +1008,7 @@
           numbers.forEach(numStr => {
             const val = parseFloat(numStr.replace(',', '.'));
             if (val > maxNum && val < 500000) {
-              maxNum = val;
+              maxNum = val; // 備用：追蹤文本中最大的合理數字
             }
           });
         }
@@ -1221,7 +1227,7 @@ JSON Schema:
           try {
             const reader = new FileReader();
             reader.onloadend = async () => {
-              const compressed = await compressImage(reader.result, 800);
+              const compressed = await preprocessReceiptImage(reader.result, 1600);
               state.scanPreviewUrl = compressed;
               saveState(); 
               render();
@@ -1280,6 +1286,99 @@ JSON Schema:
       state.currentView = 'landing';
       saveState();
       updateRoutingView();
+    }
+
+
+
+    // ==========================================
+    // 旅程管理、搜尋篩選與主要按鈕補強
+    // ==========================================
+    function switchTrip(tripId) {
+      state.activeTripId = tripId;
+      state.searchQuery = '';
+      state.selectedCategoryFilter = '全部';
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) searchInput.value = '';
+      saveState();
+      render();
+    }
+
+    function handleSearch(value) {
+      state.searchQuery = value || '';
+      render();
+    }
+
+    function filterCategory(category) {
+      state.selectedCategoryFilter = category || '全部';
+      render();
+    }
+
+    function triggerCamera() {
+      const input = document.getElementById('camera-file-input');
+      if (!input) return showToast('找不到相機上傳元件，請重新整理頁面', 'error');
+      input.value = '';
+      input.click();
+    }
+
+    function openAddTripModal() {
+      const modal = document.getElementById('add-trip-modal');
+      if (!modal) return;
+      const today = getLocalLocalDateString();
+      const start = document.getElementById('new-trip-start');
+      const end = document.getElementById('new-trip-end');
+      if (start && !start.value) start.value = today;
+      if (end && !end.value) end.value = today;
+      modal.classList.remove('hidden');
+      setBackgroundScrollLocked(true);
+      setTimeout(() => document.getElementById('new-trip-name')?.focus(), 50);
+    }
+
+    function closeAddTripModal() {
+      document.getElementById('add-trip-modal')?.classList.add('hidden');
+      if (!state.isScanning && !state.confirmModal.isOpen) setBackgroundScrollLocked(false);
+    }
+
+    function handleCreateTrip(event) {
+      event.preventDefault();
+      const name = document.getElementById('new-trip-name')?.value.trim() || '';
+      const currency = document.getElementById('new-trip-currency')?.value || 'JPY';
+      const startDate = document.getElementById('new-trip-start')?.value || getLocalLocalDateString();
+      const endDate = document.getElementById('new-trip-end')?.value || startDate;
+
+      if (!name) return showToast('請輸入旅程名稱', 'error');
+      if (startDate && endDate && endDate < startDate) return showToast('結束日期不能早於起算日期', 'error');
+
+      const newTrip = {
+        id: `trip-${Date.now()}`,
+        name,
+        startDate,
+        endDate,
+        currency,
+        expenses: []
+      };
+
+      state.trips.unshift(newTrip);
+      state.activeTripId = newTrip.id;
+      state.searchQuery = '';
+      state.selectedCategoryFilter = '全部';
+      document.getElementById('new-trip-name').value = '';
+      closeAddTripModal();
+      saveState();
+      render();
+      showToast('新旅程建立成功 🎒');
+    }
+
+    function triggerDeleteTrip() {
+      const activeTrip = state.trips.find(t => t.id === state.activeTripId) || state.trips[0];
+      if (!activeTrip) return;
+      if (state.trips.length <= 1) return showToast('至少要保留一個旅程，帳本不能裸奔 😄', 'error');
+      askConfirmation('刪除旅程紀錄', `確定要刪除「${activeTrip.name}」嗎？此旅程內所有消費明細都會移除。`, () => {
+        state.trips = state.trips.filter(t => t.id !== activeTrip.id);
+        state.activeTripId = state.trips[0]?.id || '';
+        saveState();
+        render();
+        showToast('旅程已刪除');
+      });
     }
 
     // 主渲染流程
@@ -1477,12 +1576,12 @@ JSON Schema:
             if (isDup) warningBanner.classList.remove('hidden');
             else warningBanner.classList.add('hidden');
 
-            // 僅動態繪製子品項細部，不覆寫大文字欄位以防止輸入焦點跳動
+            // 僅動態繪製子品項細部，不覆蓋大文字欄位以防止輸入焦點跳動
             const itemsList = document.getElementById('modal-items-list');
             const items = state.parsedData.items || [];
             itemsList.innerHTML = items.map((it, idx) => `
               <div class="flex gap-1.5 items-center bg-slate-50 p-2 rounded-xl border border-slate-100">
-                <input type="text" value="${it.name}" oninput="updateDraftItemField(${idx}, 'name', this.value)" placeholder="品名" class="flex-1 bg-white border border-slate-200 rounded-lg py-1 px-2 text-xs focus:ring-1 focus:ring-indigo-500">
+                <input type="text" value="${escapeHtmlAttr(it.name || '')}" oninput="updateDraftItemField(${idx}, 'name', this.value)" placeholder="品名" class="flex-1 bg-white border border-slate-200 rounded-lg py-1 px-2 text-xs focus:ring-1 focus:ring-indigo-500">
                 <input type="number" value="${it.price}" oninput="updateDraftItemField(${idx}, 'price', this.value)" placeholder="單價" class="w-16 bg-white border border-slate-200 rounded-lg py-1 px-1 text-xs text-right focus:ring-1 focus:ring-indigo-500">
                 <div class="flex items-center text-xs text-slate-400">
                   <span class="mr-1">×</span>
@@ -1503,16 +1602,6 @@ JSON Schema:
     // ==========================================
     // 智慧型發票 OCR 引擎 (雙重通道辨識邏輯)
     // ==========================================
-    // 🌟【iOS 相容性關鍵修正】：觸發唯一位於頂部的檔案輸入框
-    function triggerCamera() {
-      const inputEl = document.getElementById('camera-file-input');
-      if (inputEl) {
-        inputEl.click();
-      } else {
-        showToast('無法啟動相機模組，請重新整理網頁！', 'error');
-      }
-    }
-
     async function handleFileChange(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1528,11 +1617,14 @@ JSON Schema:
       const reader = new FileReader();
       reader.onloadend = async () => {
         try {
-          const compressed = await compressImage(reader.result, 800);
+          const compressed = await preprocessReceiptImage(reader.result, 1600);
           state.scanPreviewUrl = compressed;
           saveState(); 
           render();
           
+          // 判斷是否設定金鑰：
+          // (1) 有金鑰 -> 採用高精確度 Gemini AI
+          // (2) 無金鑰 -> 100% 本地瀏覽器端自體 Tesseract OCR 辨識
           if (state.apiKey) {
             runGeminiAnalysis(compressed, file.name);
           } else {
@@ -1551,12 +1643,13 @@ JSON Schema:
       reader.readAsDataURL(file);
     }
 
-    // Tesseract.js 本地 OCR 辨識流程
+    // 🌟【全新核心功能】：Tesseract.js 本地 OCR 辨識流程
     async function runLocalTesseractOCR(base64DataUrl, fileName) {
       document.getElementById('scanning-status-title').innerText = "本地免費 OCR 辨識中";
       document.getElementById('scanning-status-desc').innerText = "加載瀏覽器字元核心中...";
 
       try {
+        // 使用 Tesseract 提取圖片文字 (使用英文與繁體中文複合字元包)
         const result = await Tesseract.recognize(
           base64DataUrl,
           'eng+chi_tra',
@@ -1580,6 +1673,7 @@ JSON Schema:
         console.log("Tesseract Local OCR Extracted Text: ", extractedText);
 
         if (extractedText && extractedText.trim().length > 3) {
+          // 通過本地啟發式文本解析器取得明細
           const parsed = parseTextHeuristically(extractedText, fileName);
           state.parsedData = parsed;
           state.isParsing = false;
@@ -1596,6 +1690,7 @@ JSON Schema:
 
       } catch (err) {
         console.error('Local OCR Failed, loading simulated analysis...', err);
+        // 如果連 Tesseract 載入都出錯（例如完全沒網路），退回到高仿真模擬器
         setTimeout(() => {
           const mock = getMockAnalysis(fileName);
           state.parsedData = mock;
@@ -1700,6 +1795,7 @@ JSON Schema:
 
       } catch (err) {
         console.error('Gemini API 失敗，正在為您嘗試本地 OCR 辨識降級備用...', err);
+        // 如果雲端 API 失敗（如海外漫遊無訊號），無縫降級到本地 OCR
         runLocalTesseractOCR(base64DataUrl, fileName);
       }
     }
@@ -1758,6 +1854,7 @@ JSON Schema:
       if (!state.parsedData) return;
       state.parsedData[field] = field === 'totalAmount' ? Number(value) : value;
       
+      // 即時同步至本機草稿中
       localStorage.setItem('travel_scan_draft_parsed_data_html', JSON.stringify(state.parsedData));
       
       if (field === 'storeName' || field === 'date' || field === 'totalAmount') {
@@ -2160,6 +2257,352 @@ JSON Schema:
         }
       }
       throw new Error("連線重試失敗");
+    }
+
+
+
+    // ==========================================
+    // 拍照識別修正版：高品質影像前處理、金額解析、OCR/Gemini 雙備援
+    // ==========================================
+    function safeSetText(id, text) {
+      const el = document.getElementById(id);
+      if (el) el.innerText = text;
+    }
+
+    function escapeHtmlAttr(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    function cleanReceiptText(value) {
+      return String(value ?? '')
+        .replace(/[<>]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function parseMoneyNumber(raw) {
+      if (raw === null || raw === undefined) return 0;
+      let s = String(raw).replace(/[A-Za-z¥￥$€£円圓元台幣新臺幣新台幣：:()（）\s]/g, '').trim();
+      if (!s) return 0;
+      const hasComma = s.includes(',');
+      const hasDot = s.includes('.');
+      if (hasComma && hasDot) {
+        if (s.lastIndexOf('.') > s.lastIndexOf(',')) s = s.replace(/,/g, '');
+        else s = s.replace(/\./g, '').replace(',', '.');
+      } else if (hasComma) {
+        const parts = s.split(',');
+        const last = parts[parts.length - 1];
+        if (parts.length > 1 && /^\d{3}$/.test(last)) s = s.replace(/,/g, '');
+        else s = s.replace(',', '.');
+      } else if (hasDot) {
+        const parts = s.split('.');
+        const last = parts[parts.length - 1];
+        if (parts.length > 2 || (parts.length > 1 && /^\d{3}$/.test(last))) s = s.replace(/\./g, '');
+      }
+      const val = Number(s.replace(/[^0-9.-]/g, ''));
+      return Number.isFinite(val) ? val : 0;
+    }
+
+    function extractMoneyCandidates(line) {
+      return (String(line).match(/(?:[¥￥$€£]\s*)?\d{1,3}(?:[,，.]\d{3})+(?:\.\d+)?|(?:[¥￥$€£]\s*)?\d+(?:[.,]\d+)?/g) || [])
+        .map(parseMoneyNumber)
+        .filter(v => Number.isFinite(v) && v > 0 && v < 5000000);
+    }
+
+    function isLikelyDateLine(line) {
+      const l = String(line);
+      return /\d{4}[-/.年]\d{1,2}[-/.月]\d{1,2}|\d{1,2}[-/.]\d{1,2}[-/.]\d{2,4}|\d{1,2}:\d{2}/.test(l);
+    }
+
+    function normalizeReceiptData(data, fallbackFileName = '') {
+      const activeTrip = state.trips.find(t => t.id === state.activeTripId) || state.trips[0] || { currency: 'JPY' };
+      const cleanName = fallbackFileName ? fallbackFileName.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ') : '';
+      const category = ['餐飲', '交通', '住宿', '購物', '娛樂', '其他'].includes(data?.suggestedCategory) ? data.suggestedCategory : (data?.category || '其他');
+      const currency = String(data?.currency || activeTrip.currency || 'JPY').toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3) || 'JPY';
+      const amount = parseMoneyNumber(data?.totalAmount || data?.amount || 0);
+      let items = Array.isArray(data?.items) ? data.items : [];
+      items = items.map(it => ({
+        name: cleanReceiptText(it?.name || '未命名品項') || '未命名品項',
+        price: parseMoneyNumber(it?.price || 0),
+        quantity: Math.max(1, parseMoneyNumber(it?.quantity || 1) || 1)
+      })).filter(it => it.name && it.price >= 0).slice(0, 12);
+      if (!items.length) items = [{ name: '請依照片補上品項', price: amount || 0, quantity: 1 }];
+      const date = /^\d{4}-\d{2}-\d{2}$/.test(String(data?.date || '')) ? data.date : getLocalLocalDateString();
+      return {
+        storeName: cleanReceiptText(data?.storeName || data?.store || cleanName || '請手動修正店家名稱'),
+        date,
+        totalAmount: amount || items.reduce((sum, it) => sum + Number(it.price || 0) * Number(it.quantity || 1), 0),
+        currency,
+        suggestedCategory: category,
+        items
+      };
+    }
+
+    function parseTextHeuristically(text, fileName = '') {
+      const activeTrip = state.trips.find(t => t.id === state.activeTripId) || state.trips[0] || { currency: 'JPY' };
+      const raw = String(text || '');
+      const result = {
+        storeName: '請手動修正店家名稱',
+        date: getLocalLocalDateString(),
+        totalAmount: 0,
+        currency: activeTrip.currency || 'JPY',
+        suggestedCategory: '其他',
+        items: []
+      };
+      const cleanFileName = fileName ? fileName.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ').trim() : '';
+      if (cleanFileName && cleanFileName !== 'clipboard image') result.storeName = cleanReceiptText(cleanFileName);
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      const joined = raw.toLowerCase();
+      if (/[¥￥円]/.test(raw) || /\bjpy\b/i.test(raw)) result.currency = 'JPY';
+      else if (/\b(twd|nt\$|ntd)\b|新台幣|新臺幣|台幣/i.test(raw)) result.currency = 'TWD';
+      else if (/\b(usd|us\$)\b/i.test(raw)) result.currency = 'USD';
+      else if (/€|\beur\b/i.test(raw)) result.currency = 'EUR';
+      else if (/₩|\bkrw\b|원/.test(raw)) result.currency = 'KRW';
+      const datePatterns = [/(20\d{2})[\-/\.年](\d{1,2})[\-/\.月](\d{1,2})/, /(\d{1,2})[\-/\.](\d{1,2})[\-/\.](20\d{2})/, /(\d{4})(\d{2})(\d{2})/];
+      for (const rx of datePatterns) {
+        const m = raw.match(rx);
+        if (m) {
+          if (m[1].startsWith('20')) result.date = `${m[1]}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+          else result.date = `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+          break;
+        }
+      }
+      if (result.storeName === '請手動修正店家名稱') {
+        for (const line of lines.slice(0, 8)) {
+          if (/receipt|invoice|領収|明細|レシート|tel|電話|登録番号|合計|total|date|日時/i.test(line)) continue;
+          if (isLikelyDateLine(line)) continue;
+          const onlyDigits = line.replace(/\D/g, '').length >= line.length * 0.5;
+          if (!onlyDigits && line.length >= 2 && line.length <= 40) {
+            result.storeName = cleanReceiptText(line);
+            break;
+          }
+        }
+      }
+      const totalStrong = /総合計|合計金額|お支払|お買上額|ご請求|請求金額|支払金額|支払額|合\s*計|總\s*計|总\s*计|grand\s*total|amount\s*due|total/i;
+      const totalWeak = /小計|subtotal|現計|合計/i;
+      let strongTotal = 0, weakTotal = 0, maxReasonable = 0;
+      lines.forEach(line => {
+        const nums = extractMoneyCandidates(line);
+        if (!nums.length) return;
+        if (!isLikelyDateLine(line) && !/tel|電話|登録番号|no\.|invoice/i.test(line)) maxReasonable = Math.max(maxReasonable, ...nums.filter(v => v > 0));
+        if (totalStrong.test(line)) strongTotal = Math.max(strongTotal, nums[nums.length - 1]);
+        else if (totalWeak.test(line)) weakTotal = Math.max(weakTotal, nums[nums.length - 1]);
+      });
+      result.totalAmount = strongTotal || weakTotal || maxReasonable || 0;
+      const skipItem = /合計|總計|总计|小計|subtotal|total|お支払|請求|消費税|税|tax|現金|cash|card|visa|master|お預り|釣|change|電話|tel|登録番号|領収|receipt|date|日時/i;
+      for (const line of lines) {
+        if (skipItem.test(line) || isLikelyDateLine(line)) continue;
+        const nums = extractMoneyCandidates(line);
+        if (!nums.length) continue;
+        const price = nums[nums.length - 1];
+        if (price <= 0 || (result.totalAmount && price > result.totalAmount)) continue;
+        let name = line
+          .replace(/(?:[¥￥$€£]\s*)?\d{1,3}(?:[,，.]\d{3})+(?:\.\d+)?|(?:[¥￥$€£]\s*)?\d+(?:[.,]\d+)?/g, '')
+          .replace(/[×x*]\s*$/i, '')
+          .replace(/[:：\-]/g, ' ')
+          .trim();
+        name = cleanReceiptText(name);
+        if (name.length >= 2 && !/^[-_=]+$/.test(name)) result.items.push({ name, price, quantity: 1 });
+      }
+      const seen = new Set();
+      result.items = result.items.filter(it => {
+        const key = `${it.name}|${it.price}`;
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      }).slice(0, 12);
+      if (!result.items.length) result.items.push({ name: result.storeName === '請手動修正店家名稱' ? '請依照片補上品項' : result.storeName, price: result.totalAmount || 0, quantity: 1 });
+      const categoryKeywords = {
+        '餐飲': ['拉麵','咖啡','餐','飯','麵','食','飲料','麥當勞','壽司','酒','居酒屋','cafe','coffee','restaurant','food','ramen','sushi','beer','pizza'],
+        '交通': ['地鐵','捷運','高鐵','新幹線','車票','計程車','交通','uber','taxi','train','metro','bus','jr','suica','icoca'],
+        '住宿': ['飯店','酒店','旅館','民宿','宿泊','agoda','booking','hotel','hostel','room'],
+        '購物': ['藥妝','免稅','購物','超市','商店','百貨','uniqlo','bic','donki','store','shop','mall','lawson','familymart','7-11'],
+        '娛樂': ['迪士尼','環球影城','門票','樂園','觀光','disney','universal','ticket']
+      };
+      for (const [cat, kws] of Object.entries(categoryKeywords)) {
+        if (kws.some(kw => joined.includes(kw.toLowerCase()))) { result.suggestedCategory = cat; break; }
+      }
+      return normalizeReceiptData(result, fileName);
+    }
+
+    function extractJsonObject(text) {
+      if (!text) throw new Error('空白 AI 回應');
+      const cleaned = String(text).replace(/```json|```/gi, '').trim();
+      try { return JSON.parse(cleaned); } catch (_) {}
+      const start = cleaned.indexOf('{');
+      const end = cleaned.lastIndexOf('}');
+      if (start >= 0 && end > start) return JSON.parse(cleaned.slice(start, end + 1));
+      throw new Error('找不到 JSON 物件');
+    }
+
+    function createManualPhotoDraft(fileName = '') {
+      const activeTrip = state.trips.find(t => t.id === state.activeTripId) || state.trips[0] || { currency: 'JPY' };
+      return normalizeReceiptData({
+        storeName: fileName ? fileName.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ') : '請手動修正店家名稱',
+        date: getLocalLocalDateString(),
+        totalAmount: 0,
+        currency: activeTrip.currency || 'JPY',
+        suggestedCategory: state.lastSuccessPreference.category || '其他',
+        items: [{ name: '請依照片補上品項', price: 0, quantity: 1 }]
+      }, fileName);
+    }
+
+    function preprocessReceiptImage(dataUrl, maxWidth = 1600) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            let width = img.width, height = img.height;
+            const scale = width > maxWidth ? maxWidth / width : 1;
+            width = Math.round(width * scale); height = Math.round(height * scale);
+            const canvas = document.createElement('canvas');
+            canvas.width = width; canvas.height = height;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, width, height);
+            ctx.drawImage(img, 0, 0, width, height);
+            const imageData = ctx.getImageData(0, 0, width, height);
+            const d = imageData.data;
+            for (let i = 0; i < d.length; i += 4) {
+              const gray = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+              const contrasted = Math.max(0, Math.min(255, (gray - 128) * 1.35 + 128));
+              d[i] = d[i + 1] = d[i + 2] = contrasted;
+              d[i + 3] = 255;
+            }
+            ctx.putImageData(imageData, 0, 0);
+            resolve(canvas.toDataURL('image/jpeg', 0.92));
+          } catch (err) { reject(err); }
+        };
+        img.onerror = reject;
+        img.src = dataUrl;
+      });
+    }
+
+    async function handleFileChange(e) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (!/^image\//i.test(file.type)) return showToast('請選擇圖片檔案，例如 JPG、PNG 或手機截圖', 'error');
+      setBackgroundScrollLocked(true);
+      state.isScanning = true;
+      state.isParsing = true;
+      state.parsedData = null;
+      state.scanningTab = 'photo';
+      render();
+      switchScanTab('photo');
+      safeSetText('scanning-status-title', '照片前處理中');
+      safeSetText('scanning-status-desc', '正在保留高解析度並強化文字對比...');
+      const reader = new FileReader();
+      reader.onerror = () => {
+        state.isParsing = false;
+        state.parsedData = createManualPhotoDraft(file.name);
+        saveState(); render(); syncFormFields();
+        showToast('圖片讀取失敗，已開啟手動核對表單', 'error');
+      };
+      reader.onloadend = async () => {
+        let processed = reader.result;
+        try { processed = await preprocessReceiptImage(reader.result, 1600); }
+        catch (err) { console.warn('影像前處理失敗，改用原圖辨識：', err); }
+        state.scanPreviewUrl = processed;
+        saveState(); render();
+        if (state.apiKey) runGeminiAnalysis(processed, file.name);
+        else runLocalTesseractOCR(processed, file.name);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function runLocalTesseractOCR(base64DataUrl, fileName) {
+      safeSetText('scanning-status-title', '本地 OCR 辨識中');
+      safeSetText('scanning-status-desc', '正在載入 OCR 字元庫，首度使用需要一點時間...');
+      document.getElementById('api-missing-banner')?.classList.remove('hidden');
+      if (!window.Tesseract || !Tesseract.recognize) {
+        state.parsedData = createManualPhotoDraft(fileName);
+        state.isParsing = false; state.lastPreviewBackup = base64DataUrl;
+        saveState(); render(); syncFormFields();
+        showToast('OCR 引擎載入失敗，已改為照片核對模式，資料不會亂填', 'error');
+        return;
+      }
+      const languageAttempts = ['eng+jpn+chi_tra', 'eng+jpn', 'eng+chi_tra', 'eng'];
+      let extractedText = '', lastError = null;
+      for (const langs of languageAttempts) {
+        try {
+          safeSetText('scanning-status-desc', `正在載入 ${langs} 字元庫...`);
+          const result = await Tesseract.recognize(base64DataUrl, langs, {
+            logger: m => {
+              if (m.status === 'recognizing text') safeSetText('scanning-status-desc', `本地字元掃描中... ${Math.round((m.progress || 0) * 100)}%`);
+              else if (m.status === 'loading language traineddata') safeSetText('scanning-status-desc', `正在下載 ${langs} 字元庫，完成後會快取...`);
+              else if (m.status) safeSetText('scanning-status-desc', `OCR 狀態：${m.status}`);
+            }
+          });
+          extractedText = result?.data?.text || '';
+          if (extractedText.trim().length >= 4) break;
+        } catch (err) { lastError = err; console.warn(`OCR 語言組合 ${langs} 失敗`, err); }
+      }
+      console.log('TravelScan OCR extracted text:', extractedText);
+      if (extractedText.trim().length >= 4) {
+        const parsed = parseTextHeuristically(extractedText, fileName);
+        state.parsedData = parsed; state.isParsing = false;
+        state.lastParsedBackup = parsed; state.lastPreviewBackup = base64DataUrl;
+        saveState(); render(); syncFormFields();
+        showToast('照片 OCR 已完成，請快速核對金額與店名 🟢');
+      } else {
+        console.warn('OCR 無有效文字，進入手動核對。', lastError);
+        state.parsedData = createManualPhotoDraft(fileName);
+        state.isParsing = false; state.lastPreviewBackup = base64DataUrl;
+        saveState(); render(); syncFormFields();
+        showToast('照片已保留，但 OCR 沒讀到足夠文字；已開啟手動核對表單', 'error');
+      }
+    }
+
+    async function callGeminiVisionOnce(model, body, apiKey) {
+      const response = await fetchWithRetry(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) },
+        2
+      );
+      if (!response.ok) {
+        let detail = '';
+        try { detail = await response.text(); } catch (_) {}
+        throw new Error(`Gemini ${model} HTTP ${response.status} ${detail.slice(0, 160)}`);
+      }
+      return await response.json();
+    }
+
+    async function runGeminiAnalysis(base64DataUrl, fileName) {
+      safeSetText('scanning-status-title', 'Gemini AI 高精度辨識中');
+      safeSetText('scanning-status-desc', '正在以雲端視覺模型解析收據圖片...');
+      const apiKey = (state.apiKey || '').trim();
+      if (!apiKey) return runLocalTesseractOCR(base64DataUrl, fileName);
+      const base64Content = String(base64DataUrl).split(',')[1] || String(base64DataUrl);
+      const prompt = `你是收據與發票數位化專家。請讀取圖片，輸出純 JSON，不要 markdown，不要說明。若看不清楚請用空字串或 0，不要猜假資料。請使用繁體中文品項名稱。Schema: {"storeName":"店家名稱","date":"YYYY-MM-DD","totalAmount":總金額數字,"currency":"JPY/TWD/USD/EUR/KRW","suggestedCategory":"餐飲/交通/住宿/購物/娛樂/其他","items":[{"name":"品項名稱","price":單價數字,"quantity":數量數字}]}`;
+      const bodySnake = { contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: 'image/jpeg', data: base64Content } }] }], generation_config: { response_mime_type: 'application/json' } };
+      const bodyCamel = { contents: [{ role: 'user', parts: [{ text: prompt }, { inlineData: { mimeType: 'image/jpeg', data: base64Content } }] }], generationConfig: { responseMimeType: 'application/json' } };
+      const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
+      let lastError = null;
+      try {
+        for (const model of models) {
+          for (const body of [bodySnake, bodyCamel]) {
+            try {
+              const result = await callGeminiVisionOnce(model, body, apiKey);
+              const textResult = result.candidates?.[0]?.content?.parts?.map(p => p.text || '').join('\n') || '';
+              const parsed = normalizeReceiptData(extractJsonObject(textResult), fileName);
+              state.parsedData = parsed; state.isParsing = false;
+              state.lastParsedBackup = parsed; state.lastPreviewBackup = base64DataUrl;
+              saveState(); render(); syncFormFields();
+              showToast('Gemini AI 照片解析完成，請核對後儲存 🧠');
+              return;
+            } catch (err) { lastError = err; console.warn('Gemini 嘗試失敗：', err); }
+          }
+        }
+        throw lastError || new Error('Gemini 全部嘗試失敗');
+      } catch (err) {
+        console.error('Gemini 失敗，降級到本地 OCR：', err);
+        safeSetText('scanning-status-title', 'Gemini 失敗，改用本地 OCR');
+        safeSetText('scanning-status-desc', 'API 連線或格式失敗，正在切換到免費 OCR 備援...');
+        runLocalTesseractOCR(base64DataUrl, fileName);
+      }
     }
 
     window.onload = function() {
