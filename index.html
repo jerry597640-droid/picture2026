@@ -11,7 +11,7 @@
   <!-- Google Fonts - Inter -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- 🌟【新增】：Tesseract.js 瀏覽器本地端 OCR 辨識引擎 -->
+  <!-- Tesseract.js 瀏覽器本地端 OCR 辨識引擎 -->
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
   <style>
@@ -34,6 +34,9 @@
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased relative w-full min-h-screen overflow-x-hidden">
 
+  <!-- 🌟【iOS 相容性完美修復】：全網頁僅保留這一個唯一的檔案輸入框，且使用不影響排版的隱形樣式，完美支援 iPhone 喚起相機與相簿 -->
+  <input type="file" id="camera-file-input" onchange="handleFileChange(event)" accept="image/*" class="opacity-0 absolute w-0 h-0 pointer-events-none z-0">
+
   <!-- ==========================================
       1. 官方產品形象首頁 (Landing Page)
       ========================================== -->
@@ -49,7 +52,7 @@
           </div>
           <span class="text-lg font-black tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-300">TravelScan</span>
         </div>
-        <button onclick="launchAppWorkspace()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
+        <button onclick="launchAppWorkspace()" class="bg-indigo-600 hover:bg-indigo-50 text-white px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all active:scale-95">
           進入系統 (Launch App)
         </button>
       </div>
@@ -173,7 +176,7 @@
 
 
   <!-- ==========================================
-      2. 旅步記帳 App 工作區 (原本的主程式)
+      2. 旅步記帳 App 工作區 (主程式)
       ========================================== -->
   <div id="app-container" class="relative min-h-screen pb-16 flex flex-col hidden view-transition">
     
@@ -208,9 +211,6 @@
         </div>
       </div>
     </header>
-
-    <!-- 隱藏式拍照 input (直接喚起系統相機或相簿) -->
-    <input type="file" id="camera-file-input" onchange="handleFileChange(event)" accept="image/*" capture="environment" class="hidden">
 
     <!-- 橫幅 / 旅程統計與匯出工具列 -->
     <section class="bg-white border-b border-slate-200 shrink-0">
@@ -905,6 +905,7 @@
       setBackgroundScrollLocked(true);
     }
 
+    // 關閉金鑰設定
     function closeSettingsModal() {
       document.getElementById('settings-modal').classList.add('hidden');
       setBackgroundScrollLocked(false);
@@ -932,7 +933,7 @@
       switchScanTab('text');
     }
 
-    // 智慧型離線啟發式文字收據拆解器 (確保沒網路或無金鑰也 100% 成功解析)
+    // 智慧型離線啟發式文字收據拆解器
     function parseTextHeuristically(text, fileName = "") {
       const result = {
         storeName: "本地辨識商店",
@@ -953,7 +954,6 @@
       if (lines.length > 0 && result.storeName === "本地辨識商店") {
         for (let i = 0; i < Math.min(lines.length, 5); i++) {
           const l = lines[i];
-          // 如果第一行不像日期且長度合適，暫定為店家名稱
           if (l.length > 2 && !/\d{4}/.test(l) && !/total|amount|sum|price|合計|小計/i.test(l)) {
             result.storeName = l;
             break;
@@ -974,9 +974,9 @@
 
       // 3. 智慧日期定位
       const dateRegexes = [
-        /(\d{4})[-/](\d{1,2})[-/](\d{1,2})/, // 2026-06-15 or 2026/06/15
-        /(\d{1,2})[-/](\d{1,2})[-/](\d{4})/, // 15/06/2026
-        /(20\d{2})年(\d{1,2})月(\d{1,2})日/ // 2026年06月15日
+        /(\d{4})[-/](\d{1,2})[-/](\d{1,2})/,
+        /(\d{1,2})[-/](\d{1,2})[-/](\d{4})/,
+        /(20\d{2})年(\d{1,2})月(\d{1,2})日/
       ];
       
       for (const rx of dateRegexes) {
@@ -1002,7 +1002,7 @@
           numbers.forEach(numStr => {
             const val = parseFloat(numStr.replace(',', '.'));
             if (val > maxNum && val < 500000) {
-              maxNum = val; // 備用：追蹤文本中最大的合理數字
+              maxNum = val;
             }
           });
         }
@@ -1477,7 +1477,7 @@ JSON Schema:
             if (isDup) warningBanner.classList.remove('hidden');
             else warningBanner.classList.add('hidden');
 
-            // 僅動態繪製子品項細部，不覆蓋大文字欄位以防止輸入焦點跳動
+            // 僅動態繪製子品項細部，不覆寫大文字欄位以防止輸入焦點跳動
             const itemsList = document.getElementById('modal-items-list');
             const items = state.parsedData.items || [];
             itemsList.innerHTML = items.map((it, idx) => `
@@ -1503,6 +1503,16 @@ JSON Schema:
     // ==========================================
     // 智慧型發票 OCR 引擎 (雙重通道辨識邏輯)
     // ==========================================
+    // 🌟【iOS 相容性關鍵修正】：觸發唯一位於頂部的檔案輸入框
+    function triggerCamera() {
+      const inputEl = document.getElementById('camera-file-input');
+      if (inputEl) {
+        inputEl.click();
+      } else {
+        showToast('無法啟動相機模組，請重新整理網頁！', 'error');
+      }
+    }
+
     async function handleFileChange(e) {
       const file = e.target.files[0];
       if (!file) return;
@@ -1523,9 +1533,6 @@ JSON Schema:
           saveState(); 
           render();
           
-          // 判斷是否設定金鑰：
-          // (1) 有金鑰 -> 採用高精確度 Gemini AI
-          // (2) 無金鑰 -> 100% 本地瀏覽器端自體 Tesseract OCR 辨識
           if (state.apiKey) {
             runGeminiAnalysis(compressed, file.name);
           } else {
@@ -1544,13 +1551,12 @@ JSON Schema:
       reader.readAsDataURL(file);
     }
 
-    // 🌟【全新核心功能】：Tesseract.js 本地 OCR 辨識流程
+    // Tesseract.js 本地 OCR 辨識流程
     async function runLocalTesseractOCR(base64DataUrl, fileName) {
       document.getElementById('scanning-status-title').innerText = "本地免費 OCR 辨識中";
       document.getElementById('scanning-status-desc').innerText = "加載瀏覽器字元核心中...";
 
       try {
-        // 使用 Tesseract 提取圖片文字 (使用英文與繁體中文複合字元包)
         const result = await Tesseract.recognize(
           base64DataUrl,
           'eng+chi_tra',
@@ -1574,7 +1580,6 @@ JSON Schema:
         console.log("Tesseract Local OCR Extracted Text: ", extractedText);
 
         if (extractedText && extractedText.trim().length > 3) {
-          // 通過本地啟發式文本解析器取得明細
           const parsed = parseTextHeuristically(extractedText, fileName);
           state.parsedData = parsed;
           state.isParsing = false;
@@ -1591,7 +1596,6 @@ JSON Schema:
 
       } catch (err) {
         console.error('Local OCR Failed, loading simulated analysis...', err);
-        // 如果連 Tesseract 載入都出錯（例如完全沒網路），退回到高仿真模擬器
         setTimeout(() => {
           const mock = getMockAnalysis(fileName);
           state.parsedData = mock;
@@ -1696,7 +1700,6 @@ JSON Schema:
 
       } catch (err) {
         console.error('Gemini API 失敗，正在為您嘗試本地 OCR 辨識降級備用...', err);
-        // 如果雲端 API 失敗（如海外漫遊無訊號），無縫降級到本地 OCR
         runLocalTesseractOCR(base64DataUrl, fileName);
       }
     }
@@ -1755,7 +1758,6 @@ JSON Schema:
       if (!state.parsedData) return;
       state.parsedData[field] = field === 'totalAmount' ? Number(value) : value;
       
-      // 即時同步至本機草稿中
       localStorage.setItem('travel_scan_draft_parsed_data_html', JSON.stringify(state.parsedData));
       
       if (field === 'storeName' || field === 'date' || field === 'totalAmount') {
